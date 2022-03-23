@@ -1,0 +1,19 @@
+{
+  "name": "html-gdpr-guard",
+  "version": "0.0.1",
+  "description": "Vanilla JavaScript binding to gdpr-guard as efficiently and easily as possible, based on data provided in the DOM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Voltra/html-gdpr-guard.git"
+  },
+  "author": "Voltra <ludwig.guerin.98@gmx.fr>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Voltra/html-gdpr-guard/issues"
+  },
+  "homepage": "https://github.com/Voltra/html-gdpr-guard#readme"
+}
