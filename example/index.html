@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>html-gdpr-guard DEMO</title>
+
+		<link rel="stylesheet" href="./main.css"/>
+
+		<script data-gdpr-on-enable="3rdparty" type="text" src="./3rd-party.js"></script>
+	</head>
+	<body>
+		<header>
+			Some random nav and stuff
+		</header>
+
+		<main>
+			<div id="app">
+				lorem ipsum
+			</div>
+
+			<!-- Or data-gdpr="managerName" to make it more concise and avoid the [data-gdpr-manager] element -->
+			<article id="gdpr-modal" data-gdpr>
+				<div data-gdpr-manager="managerName">
+					<h2>
+						GDPR Settings
+					</h2>
+
+					<label>
+						Allow?
+						<input type="checkbox" name="managerName" checked/>
+					</label>
+
+					<p data-gdpr-guard-description>
+						Description from DOM
+					</p>
+
+					<div>
+						<button data-gdpr-decline-all>
+							Decline all
+						</button>
+
+						<button data-gdpr-allow-all>
+							Allow all
+						</button>
+					</div>
+
+					<article data-gdpr-guard="guardName">
+						<h4>
+							Solo guard at the top level
+						</h4>
+
+						<label>
+							Allow?
+							<input type="checkbox" name="guardName"/>
+						</label>
+
+						<p data-gdpr-guard-description>
+							Yet another description from the DOM
+						</p>
+					</article>
+
+					<section data-gdpr-group="groupName" data-gdpr-guard-description="test">
+						<h3>
+							First group
+						</h3>
+
+						<label>
+							Allow?
+							<input type="checkbox" name="groupName" checked/>
+						</label>
+
+						<article data-gdpr-guard>
+							<h4 data-gdpr-guard-name>
+								My guard name from the DOM
+							</h4>
+
+							<label>
+								Allow?
+								<input data-gdpr-checkbox type="checkbox" name="someRandomKey"/>
+							</label>
+						</article>
+
+						<article data-gdpr-guard="3rdparty" data-gdpr-guard-storage="LocalStorage">
+							<h4>
+								3rd party
+							</h4>
+
+							<label>
+								Allow?
+								<input data-gdpr-checkbox type="checkbox" name="3rdparty"/>
+							</label>
+						</article>
+					</section>
+
+					<div>
+						<button data-gdpr-cancel>
+							Cancel
+						</button>
+
+						<button data-gdpr-save>
+							Save
+						</button>
+					</div>
+				</div>
+			</article>
+
+			<aside data-gdpr-banner>
+				<p>
+					This website uses cookies to ensure you get the best experience.
+					<a href="#">
+						Learn more
+					</a>
+				</p>
+
+				<div>
+					<button data-gdpr-open class="btn">
+						Choose
+					</button>
+
+					<button data-gdpr-decline-all class="btn -failure">
+						Decline
+					</button>
+
+					<button data-gdpr-allow-all class="btn -success">
+						Allow
+					</button>
+				</div>
+			</aside>
+		</main>
+
+		<footer>
+			<button data-gdpr-open>
+				Open GDPR settings
+			</button>
+		</footer>
+	</body>
+</html>

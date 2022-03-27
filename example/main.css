@@ -1,0 +1,26 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	width: 100vw;
+	height: 100vh;
+}
+
+body {
+	overflow: hidden auto;
+}
+
+.btn {
+	//
+}
+
+.btn.-success {
+	//
+}
+
+.btn.-failure {
+	//
+}

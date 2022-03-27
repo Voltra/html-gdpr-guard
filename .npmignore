@@ -1,0 +1,11 @@
+**/tsconfig.json
+**/nodemon.json
+**/tslint.json
+**/webpack.config.js
+**/jest.config.js
+**/typedoc.config.js
+src
+demo
+example
+docs
+*.png
