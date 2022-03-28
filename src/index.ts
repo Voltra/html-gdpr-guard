@@ -1,6 +1,5 @@
 import { NoManagerDefinitionError } from "@/errors/NoManagerDefinitionError";
-import { GdprGroupBuilder, GdprManagerBuilder, GdprStorage } from "gdpr-guard";
-import { NoNameError } from "@/errors/NoNameError";
+import { GdprGroupBuilder, GdprManager, GdprManagerBuilder, GdprSavior, GdprStorage } from "gdpr-guard";
 import { NoCheckboxError } from "@/errors/NoCheckboxError";
 import { childSelector, childSelectorAll, findChild, forEachChild } from "@/utils/dom";
 import {
@@ -11,6 +10,11 @@ import {
 	storageFromDOM
 } from "@/utils/dataExtractors";
 import { isMeaningfulStr } from "@/utils/misc";
+
+export interface GuardParseResult {
+	name: string;
+	checkbox: HTMLInputElement;
+}
 
 const parseManagerDetails = (gdprEl: HTMLElement) => {
 	let managerEl = gdprEl;
@@ -39,7 +43,7 @@ const parseManagerDetails = (gdprEl: HTMLElement) => {
 	};
 };
 
-const addGuard = (guardEl: HTMLElement, groupBuilder: GdprGroupBuilder, parentRequired: boolean) => {
+const addGuard = (guardEl: HTMLElement, groupBuilder: GdprGroupBuilder, parentRequired: boolean): GuardParseResult => {
 	const guardBuilder = groupBuilder.startGuard();
 
 	const name = nameFromDOM(guardEl, "gdpr-guard");
@@ -70,15 +74,25 @@ const addGuard = (guardEl: HTMLElement, groupBuilder: GdprGroupBuilder, parentRe
 	}
 
 	guardBuilder.endGuard();
+
+	return {
+		name,
+		checkbox,
+	};
 };
 
-const addGroup = (groupEl: HTMLElement, managerBuilder: GdprManagerBuilder, parentRequired: boolean) => {
+const addGroup = (groupEl: HTMLElement, managerBuilder: GdprManagerBuilder, parentRequired: boolean): GuardParseResult[] => {
 	const groupBuilder = managerBuilder.startGroup();
 
 	const name = nameFromDOM(groupEl, "gdpr-group");
 	groupBuilder.withName(name);
 
 	const checkbox = checkboxFromDOM(groupEl, name);
+
+	const parsedGuards = [{
+		name,
+		checkbox,
+	}];
 
 	const isRequired = parentRequired || guardIsRequiredInDOM(groupEl, checkbox)
 
@@ -103,11 +117,17 @@ const addGroup = (groupEl: HTMLElement, managerBuilder: GdprManagerBuilder, pare
 	}
 
 	// Recursively parse child guards from there
-	parseChildGuards(groupEl, groupBuilder, isRequired);
+	const guards = addChildGuards(groupEl, groupBuilder, isRequired);
 	groupBuilder.endGroup();
+
+
+	parsedGuards.push(...guards);
+	return parsedGuards;
 };
 
-const parseChildGuards = (rootEl: HTMLElement, groupBuilder: GdprGroupBuilder, required: boolean = false) => {
+const addChildGuards = (rootEl: HTMLElement, groupBuilder: GdprGroupBuilder, required: boolean = false) => {
+	const parsedGuards = [];
+
 	forEachChild(rootEl, el => {
 		if (el?.matches("[data-gdpr-group]")) {
 			addGroup(el as HTMLElement, groupBuilder, required);
@@ -115,9 +135,11 @@ const parseChildGuards = (rootEl: HTMLElement, groupBuilder: GdprGroupBuilder, r
 			addGuard(el as HTMLElement, groupBuilder, required);
 		}
 	});
+
+	return parsedGuards;
 };
 
-const omniParse = (gdprEl: HTMLElement|undefined = undefined) => {
+const entryPointToName = async (gdprSavior: GdprSavior, gdprEl: HTMLElement|undefined = undefined): Promise<GdprManager> => {
 	if (typeof gdprEl === "undefined") {
 		gdprEl = document.querySelector("[data-gdpr]") as HTMLElement ?? undefined;
 
@@ -130,8 +152,35 @@ const omniParse = (gdprEl: HTMLElement|undefined = undefined) => {
 
 	const managerBuilder = GdprManagerBuilder.make();
 
-	childSelectorAll(managerEl, "[data-gdpr-group]")
-		.forEach(el => addGroup(el as HTMLElement, managerBuilder, false));
+	const parsedGuards = [] as GuardParseResult[];
 
-	const managerFromDOM = managerBuilder.build();
+	childSelectorAll(managerEl, "[data-gdpr-group]")
+		.forEach(el => {
+			const guards = addGroup(el as HTMLElement, managerBuilder, false);
+			parsedGuards.push(...guards);
+		});
+
+	const manager = await gdprSavior.restoreOrCreate(async () => managerBuilder.build());
+
+	managerCheckbox.addEventListener("change", () => {
+		manager.toggle();
+	});
+
+	parsedGuards.forEach(({ name, checkbox }) => {
+		const guard = manager.getGuard(name)!;
+
+		checkbox.addEventListener("change", () => {
+			guard.toggle();
+		});
+	});
+
+	// TODO: Parse scripts dependencies
+	// TODO: Setup event handlers for scripts
+	// TODO: Provide extension point for setting event handlers
+
+	if (manager.bannerWasShown) {
+		manager.closeBanner();
+	}
+
+	return manager;
 };
