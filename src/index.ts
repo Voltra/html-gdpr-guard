@@ -10,6 +10,7 @@ import {
 	storageFromDOM
 } from "@/utils/dataExtractors";
 import { isMeaningfulStr } from "@/utils/misc";
+import { GdprManagerEventHub } from "gdpr-guard/dist/GdprManagerEventHub";
 
 export interface GuardParseResult {
 	name: string;
@@ -139,29 +140,7 @@ const addChildGuards = (rootEl: HTMLElement, groupBuilder: GdprGroupBuilder, req
 	return parsedGuards;
 };
 
-const entryPointToName = async (gdprSavior: GdprSavior, gdprEl: HTMLElement|undefined = undefined): Promise<GdprManager> => {
-	if (typeof gdprEl === "undefined") {
-		gdprEl = document.querySelector("[data-gdpr]") as HTMLElement ?? undefined;
-
-		if (typeof gdprEl === "undefined") {
-			throw new NoManagerDefinitionError();
-		}
-	}
-
-	const { managerEl, managerCheckbox, managerName } = parseManagerDetails(gdprEl);
-
-	const managerBuilder = GdprManagerBuilder.make();
-
-	const parsedGuards = [] as GuardParseResult[];
-
-	childSelectorAll(managerEl, "[data-gdpr-group]")
-		.forEach(el => {
-			const guards = addGroup(el as HTMLElement, managerBuilder, false);
-			parsedGuards.push(...guards);
-		});
-
-	const manager = await gdprSavior.restoreOrCreate(async () => managerBuilder.build());
-
+const setupCheckboxListeners = (manager: GdprManager, managerCheckbox: HTMLInputElement, parsedGuards: GuardParseResult[]) => {
 	managerCheckbox.addEventListener("change", () => {
 		manager.toggle();
 	});
@@ -173,10 +152,144 @@ const entryPointToName = async (gdprSavior: GdprSavior, gdprEl: HTMLElement|unde
 			guard.toggle();
 		});
 	});
+};
 
-	// TODO: Parse scripts dependencies
-	// TODO: Setup event handlers for scripts
-	// TODO: Provide extension point for setting event handlers
+const parseGuardsFromDOM = (managerEl: HTMLElement, managerBuilder: GdprManagerBuilder) => {
+	const parsedGuards = [] as GuardParseResult[];
+
+	childSelectorAll(managerEl, "[data-gdpr-group]")
+		.forEach(el => {
+			const guards = addGroup(el as HTMLElement, managerBuilder, false);
+			parsedGuards.push(...guards);
+		});
+
+	return parsedGuards;
+};
+
+const setupScriptActivation = (manager: GdprManager) => {
+	document.querySelectorAll<HTMLScriptElement>("script[type='text'][src][data-gdpr-on-enable]")
+		.forEach(script => {
+			const guardName = script.dataset.gdprOnEnable!;
+
+			if (manager.hasGuard(guardName)) {
+				manager.events.onEnable(guardName, () => {
+					const actualScript = script.cloneNode(true) as HTMLScriptElement;
+					actualScript.type = "text/javascript";
+					script.remove();
+					document.head.appendChild(actualScript);
+				});
+			} else {
+				script.remove();
+			}
+		});
+};
+
+const setupStyleSheetsActivation = (manager: GdprManager) => {
+	document.querySelectorAll<HTMLLinkElement>("link[href][data-gdpr-on-enable]")
+		.forEach(styleSheet => {
+			const guardName = styleSheet.dataset.gdprOnEnable!;
+
+			if (manager.hasGuard(guardName)) {
+				manager.events.onEnable(guardName, () => {
+					const actualStyleeSheet = styleSheet.cloneNode(true) as HTMLLinkElement;
+					actualStyleeSheet.rel = "stylesheet";
+					styleSheet.remove();
+					document.head.appendChild(actualStyleeSheet);
+				});
+			} else {
+				styleSheet.remove();
+			}
+		});
+};
+
+export type BindEventsCallback = (eventsHub: GdprManagerEventHub) => void;
+
+const GlobalEventBus = {
+	events: {} as Record<string, Record<string, Array<(e: Event) => void>>>,
+	on(event: string, selector: string, listener: (e: Event) => void) {
+		if (!(event in this.events)) {
+			this.events[event] = {
+				[selector]: [listener],
+			};
+
+			window.addEventListener(event, e => {
+				Object.entries(this.events[event])
+					.forEach(([selector, listeners]: [string, (typeof listener)[]]) => {
+						if ((e.target as HTMLElement|null)?.matches?.(selector)) {
+							listeners.forEach(listener => listener(e));
+						}
+					});
+			});
+		} else {
+			const eventManager = this.events[event];
+
+			if (!(selector in eventManager)) {
+				eventManager[selector] = [listener];
+			} else {
+				eventManager[selector].push(listener);
+			}
+		}
+
+	}
+};
+
+const setupButtonsListeners = (manager: GdprManager, gdprSavior: GdprSavior) => {
+	// TODO: Bind event listeners to buttons -> data-gdpr-cancel, data-gdpr-save
+
+	GlobalEventBus.on("click", "[data-gdpr-open]", e => {
+		e.preventDefault();
+
+		manager.resetAndShowBanner();
+	});
+
+	GlobalEventBus.on("click", "[data-gdpr-decline-all]", e => {
+		e.preventDefault();
+
+		manager.disable();
+		gdprSavior.store(manager.raw());
+
+		// TODO: error handling
+	});
+
+	GlobalEventBus.on("click", "[data-gdpr-allow-all]", e => {
+		e.preventDefault();
+
+		manager.enable();
+		gdprSavior.store(manager.raw());
+
+		// TODO: error handling
+	});
+
+	GlobalEventBus.on("click", "[data-gdpr-save]", e => {
+		e.preventDefault();
+
+		gdprSavior.store(manager.raw());
+
+		// TODO: error handling
+	});
+};
+
+export const createManager = async (gdprSavior: GdprSavior, gdprEl: HTMLElement|undefined = undefined, bindEventHandlers: BindEventsCallback = () => {}): Promise<GdprManager> => {
+	if (typeof gdprEl === "undefined") {
+		gdprEl = document.querySelector("[data-gdpr]") as HTMLElement ?? undefined;
+
+		if (typeof gdprEl === "undefined") {
+			throw new NoManagerDefinitionError();
+		}
+	}
+
+	const { managerEl, managerCheckbox, managerName } = parseManagerDetails(gdprEl);
+
+	const managerBuilder = GdprManagerBuilder.make();
+	const parsedGuards = parseGuardsFromDOM(managerEl, managerBuilder);
+	const manager = await gdprSavior.restoreOrCreate(async () => managerBuilder.build());
+
+	setupCheckboxListeners(manager, managerCheckbox, parsedGuards);
+	setupButtonsListeners(manager, gdprSavior);
+	setupScriptActivation(manager);
+	setupStyleSheetsActivation(manager);
+
+	bindEventHandlers(manager.events);
 
 	if (manager.bannerWasShown) {
 		manager.closeBanner();

@@ -5,7 +5,9 @@
 		<title>html-gdpr-guard DEMO</title>
 
 		<link rel="stylesheet" href="./main.css"/>
+		<script src="index.js" defer></script>
 
+		<link data-gdpr-on-enable="3rdparty" rel="none" href="./3rd-party.css"/>
 		<script data-gdpr-on-enable="3rdparty" type="text" src="./3rd-party.js"></script>
 	</head>
 	<body>
@@ -35,11 +37,11 @@
 					</p>
 
 					<div>
-						<button data-gdpr-decline-all>
+						<button class="btn -failure" data-gdpr-decline-all>
 							Decline all
 						</button>
 
-						<button data-gdpr-allow-all>
+						<button class="btn -success" data-gdpr-allow-all>
 							Allow all
 						</button>
 					</div>
@@ -93,18 +95,18 @@
 					</section>
 
 					<div>
-						<button data-gdpr-cancel>
+						<button class="btn" data-gdpr-cancel>
 							Cancel
 						</button>
 
-						<button data-gdpr-save>
+						<button class="btn -success" data-gdpr-save>
 							Save
 						</button>
 					</div>
 				</div>
 			</article>
 
-			<aside data-gdpr-banner>
+			<aside id="gdpr-banner" data-gdpr-banner>
 				<p>
 					This website uses cookies to ensure you get the best experience.
 					<a href="#">
@@ -129,7 +131,7 @@
 		</main>
 
 		<footer>
-			<button data-gdpr-open>
+			<button data-gdpr-open class="btn">
 				Open GDPR settings
 			</button>
 		</footer>
