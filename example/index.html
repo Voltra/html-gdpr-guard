@@ -5,7 +5,8 @@
 		<title>html-gdpr-guard DEMO</title>
 
 		<link rel="stylesheet" href="./main.css"/>
-		<script src="index.js" defer></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/micromodal@0.4.10/dist/micromodal.min.js" integrity="sha256-RtwfGO9f2IexK3ooZsgkpwl7YsYSfuQBb1G62RGLtqc=" crossorigin="anonymous"></script>
+		<script defer src="index.js"></script>
 
 		<link data-gdpr-on-enable="3rdparty" rel="none" href="./3rd-party.css"/>
 		<script data-gdpr-on-enable="3rdparty" type="text" src="./3rd-party.js"></script>
@@ -20,91 +21,95 @@
 				lorem ipsum
 			</div>
 
-			<!-- Or data-gdpr="managerName" to make it more concise and avoid the [data-gdpr-manager] element -->
-			<article id="gdpr-modal" data-gdpr>
-				<div data-gdpr-manager="managerName">
-					<h2>
-						GDPR Settings
-					</h2>
+			<div id="gdpr-modal" aria-hidden="true">
+				<div class="backdrop" tabindex="-1" data-micromodal-close>
+					<!-- Or data-gdpr="managerName" to make it more concise and avoid the [data-gdpr-manager] element -->
+					<article class="modal" role="dialog" aria-modal="true" data-gdpr>
+						<div class="gdpr-guard" data-gdpr-manager="managerName">
+							<h2>
+								GDPR Settings
+							</h2>
 
-					<label>
-						Allow?
-						<input type="checkbox" name="managerName" checked/>
-					</label>
+							<label>
+								Allow?
+								<input type="checkbox" name="managerName" checked/>
+							</label>
 
-					<p data-gdpr-guard-description>
-						Description from DOM
-					</p>
+							<p data-gdpr-guard-description>
+								Description from DOM
+							</p>
 
-					<div>
-						<button class="btn -failure" data-gdpr-decline-all>
-							Decline all
-						</button>
+							<div>
+								<button class="btn -failure" data-gdpr-decline-all>
+									Decline all
+								</button>
 
-						<button class="btn -success" data-gdpr-allow-all>
-							Allow all
-						</button>
-					</div>
+								<button class="btn -success" data-gdpr-allow-all>
+									Allow all
+								</button>
+							</div>
 
-					<article data-gdpr-guard="guardName">
-						<h4>
-							Solo guard at the top level
-						</h4>
+							<article class="gdpr-guard" data-gdpr-guard="guardName">
+								<h4>
+									Solo guard at the top level
+								</h4>
 
-						<label>
-							Allow?
-							<input type="checkbox" name="guardName"/>
-						</label>
+								<label>
+									Allow?
+									<input type="checkbox" name="guardName"/>
+								</label>
 
-						<p data-gdpr-guard-description>
-							Yet another description from the DOM
-						</p>
+								<p data-gdpr-guard-description>
+									Yet another description from the DOM
+								</p>
+							</article>
+
+							<section class="gdpr-guard" data-gdpr-group="groupName" data-gdpr-guard-description="test">
+								<h3>
+									First group
+								</h3>
+
+								<label>
+									Allow?
+									<input type="checkbox" name="groupName" checked/>
+								</label>
+
+								<article class="gdpr-guard" data-gdpr-guard>
+									<h4 data-gdpr-guard-name>
+										My guard name from the DOM
+									</h4>
+
+									<label>
+										Allow?
+										<input data-gdpr-checkbox type="checkbox" name="someRandomKey"/>
+									</label>
+								</article>
+
+								<article class="gdpr-guard" data-gdpr-guard="3rdparty" data-gdpr-guard-storage="LocalStorage">
+									<h4>
+										3rd party
+									</h4>
+
+									<label>
+										Allow?
+										<input data-gdpr-checkbox type="checkbox" name="3rdparty"/>
+									</label>
+								</article>
+							</section>
+
+							<div>
+								<button class="btn" data-gdpr-cancel>
+									Cancel
+								</button>
+
+								<button class="btn -success" data-gdpr-save>
+									Save
+								</button>
+							</div>
+						</div>
 					</article>
-
-					<section data-gdpr-group="groupName" data-gdpr-guard-description="test">
-						<h3>
-							First group
-						</h3>
-
-						<label>
-							Allow?
-							<input type="checkbox" name="groupName" checked/>
-						</label>
-
-						<article data-gdpr-guard>
-							<h4 data-gdpr-guard-name>
-								My guard name from the DOM
-							</h4>
-
-							<label>
-								Allow?
-								<input data-gdpr-checkbox type="checkbox" name="someRandomKey"/>
-							</label>
-						</article>
-
-						<article data-gdpr-guard="3rdparty" data-gdpr-guard-storage="LocalStorage">
-							<h4>
-								3rd party
-							</h4>
-
-							<label>
-								Allow?
-								<input data-gdpr-checkbox type="checkbox" name="3rdparty"/>
-							</label>
-						</article>
-					</section>
-
-					<div>
-						<button class="btn" data-gdpr-cancel>
-							Cancel
-						</button>
-
-						<button class="btn -success" data-gdpr-save>
-							Save
-						</button>
-					</div>
 				</div>
-			</article>
+			</div>
 
 			<aside id="gdpr-banner" data-gdpr-banner>
 				<p>
@@ -115,7 +120,7 @@
 				</p>
 
 				<div>
-					<button data-gdpr-open class="btn">
+					<button data-gdpr-open class="btn" data-micromodal-trigger="gdpr-modal">
 						Choose
 					</button>
 

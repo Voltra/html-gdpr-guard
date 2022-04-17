@@ -3,7 +3,15 @@ import { NoNameError } from "@/errors/NoNameError";
 import { NoCheckboxError } from "@/errors/NoCheckboxError";
 import { GdprStorage } from "gdpr-guard";
 import { isMeaningfulStr } from "@/utils/misc";
+import { NoManagerDefinitionError } from "@/errors/NoManagerDefinitionError";
 
+/**
+ * Get the guard's name from the DOM
+ * @param guardEl - The guard element to query
+ * @param guardDataKey - The key in the dataset of {@link guardEl} where the name could be
+ * @param nameDataKey - The name of the data attribute that can be found in child nodes to parse the name
+ * @throws {NoNameError} - If it can't find the guard's name
+ */
 export const nameFromDOM = (guardEl: HTMLElement, guardDataKey: string, nameDataKey: string = "gdpr-guard-name"): string => {
 	const str = guardEl.dataset[guardDataKey];
 
@@ -82,4 +90,30 @@ export const guardIsRequiredInDOM = (guardEl: HTMLElement, checkbox: HTMLInputEl
 	}
 
 	return false;
+};
+export const parseManagerDetails = (gdprEl: HTMLElement) => {
+	let managerEl = gdprEl;
+	const { gdpr } = gdprEl.dataset;
+	let managerName: string = "";
+
+	if (isMeaningfulStr(gdpr)) {
+		managerName = gdpr;
+	} else {
+		const el = gdprEl.querySelector("[data-gdpr-manager]");
+
+		if (!el) {
+			throw new NoManagerDefinitionError();
+		}
+
+		managerEl = el as HTMLElement;
+		managerName = nameFromDOM(managerEl, "gdpr-manager");
+	}
+
+	const managerCheckbox = checkboxFromDOM(managerEl, managerName);
+
+	return {
+		managerEl,
+		managerCheckbox,
+		managerName,
+	};
 };
