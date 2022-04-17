@@ -26,8 +26,6 @@ export interface GdprHtmlManagerOptions {
 	 */
 	autoCloseBanner?: boolean;
 
-	// HOOKS
-
 	/**
 	 * A callback to attach event listeners to the {@link GdprManagerEventHub} before finalizing the setup
 	 * @default () => {}
@@ -67,9 +65,18 @@ export interface GdprHtmlManagerOptions {
 	 * Handle failure of cancelling
 	 */
 	onCancelErrorHook?: StoreErrorHandler;
+
+	/**
+	 * Execute code when closing the banner
+	 */
+	onBannerClose?: () => void;
+
+	/**
+	 * Execute code when opening the banner
+	 */
+	onBannerOpen?: () => void;
 }
 
-// TODO: Two-way binding? Would required a wrapper
 // TODO: Reset API in gdpr-guard?
 
 /**
@@ -92,6 +99,9 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 	onAllowAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onAllowAllErrorHook]", didStore, err),
 	onSaveErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onSaveErrorHook]", didStore, err),
 	onCancelErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onCancelErrorHook]", didStore, err),
+
+	onBannerClose = () => {},
+	onBannerOpen = () => {},
 }: GdprHtmlManagerOptions = {}): Promise<GdprManager> => {
 	if (typeof gdprEl === "undefined") {
 		gdprEl = document.querySelector<HTMLElement>("[data-gdpr]") ?? undefined;
@@ -113,20 +123,23 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 	const hadManager = await gdprSavior.exists(false);
 	const manager = await gdprSavior.restoreOrCreate(managerFactory);
 
+	setupScriptActivation(manager);
+	setupStyleSheetsActivation(manager);
 	setupCheckboxListeners(manager, managerCheckbox, parsedGuards, hadManager);
 	setupButtonsListeners(manager, gdprSavior, {
 		onDeclineAllErrorHook,
 		onAllowAllErrorHook,
 		onSaveErrorHook,
 		onCancelErrorHook,
+		onBannerClose,
+		onBannerOpen,
 	}, managerFactory);
-	setupScriptActivation(manager);
-	setupStyleSheetsActivation(manager);
 
 	bindEventHandlersHook(manager.events);
 
 	if (autoCloseBanner && manager.bannerWasShown) {
 		manager.closeBanner();
+		onBannerClose();
 	}
 
 	return manager;

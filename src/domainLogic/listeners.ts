@@ -124,6 +124,8 @@ export interface SetupButtonListenersHooks {
 	onAllowAllErrorHook: StoreErrorHandler;
 	onCancelErrorHook: StoreErrorHandler;
 	onSaveErrorHook: StoreErrorHandler;
+	onBannerClose: () => void;
+	onBannerOpen: () => void;
 }
 
 /**
@@ -139,10 +141,16 @@ export const setupButtonsListeners = (
 	hooks: SetupButtonListenersHooks,
 	restoreFactory: GdprManagerFactory
 ) => {
+	const doClose = () => {
+		manager.closeBanner();
+		hooks.onBannerClose();
+	};
+
 	GlobalEventBus.on("click", "[data-gdpr-open]", e => {
 		e.preventDefault();
 
 		manager.resetAndShowBanner();
+		hooks.onBannerOpen();
 	});
 
 	GlobalEventBus.on("click", "[data-gdpr-decline-all]", e => {
@@ -155,7 +163,7 @@ export const setupButtonsListeners = (
 				if (!didStore) {
 					hooks.onDeclineAllErrorHook(didStore);
 				} else {
-					manager.closeBanner();
+					doClose();
 				}
 			}).catch(e => hooks.onDeclineAllErrorHook(false, e));
 	});
@@ -170,7 +178,7 @@ export const setupButtonsListeners = (
 				if (!didStore) {
 					hooks.onAllowAllErrorHook(didStore);
 				} else {
-					manager.closeBanner();
+					doClose();
 				}
 			}).catch(e => hooks.onAllowAllErrorHook(false, e));
 	});
@@ -188,8 +196,6 @@ export const setupButtonsListeners = (
 					const newManager = await gdprSavior.restoreOrCreate(restoreFactory);
 					//TODO: Use save/restore new API (when it's out, for now the savior API has to suffice)
 				}
-
-				manager.closeBanner();
 			} catch(e) {
 				hooks.onCancelErrorHook(true, e as Error);
 			}
@@ -204,7 +210,7 @@ export const setupButtonsListeners = (
 				if (!didStore) {
 					hooks.onSaveErrorHook(didStore);
 				} else {
-					manager.closeBanner();
+					doClose();
 				}
 			}).catch(e => hooks.onSaveErrorHook(e));
 	});

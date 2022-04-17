@@ -24,6 +24,8 @@ document.querySelectorAll("[data-gdpr-allow-all], [data-gdpr-decline-all], [data
 		})
 	});
 
+const banner = document.querySelector("[data-gdpr-banner]");
+
 (async () => {
 	try {
 		const savior = new LocalStorageSavior(
@@ -32,7 +34,14 @@ document.querySelectorAll("[data-gdpr-allow-all], [data-gdpr-decline-all], [data
 			})
 		);
 
-		window.gdprManager = await restoreHtmlGdprManager(savior);
+		window.gdprManager = await restoreHtmlGdprManager(savior, {
+			onBannerOpen() {
+				banner.style.display = "block";
+			},
+			onBannerClose() {
+				banner.style.display = "none";
+			},
+		});
 	} catch(e) {
 		console.error(e);
 	}

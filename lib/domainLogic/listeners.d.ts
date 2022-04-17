@@ -33,6 +33,8 @@ export interface SetupButtonListenersHooks {
     onAllowAllErrorHook: StoreErrorHandler;
     onCancelErrorHook: StoreErrorHandler;
     onSaveErrorHook: StoreErrorHandler;
+    onBannerClose: () => void;
+    onBannerOpen: () => void;
 }
 /**
  * Bind event listeners to the general buttons

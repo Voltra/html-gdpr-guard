@@ -28,10 +28,30 @@ export interface GdprHtmlManagerOptions {
      * @default () => {}
      */
     addGuardsAfterHook?: (managerBuilder: GdprManagerBuilder) => void;
+    /**
+     * Handle failure of declining all
+     */
     onDeclineAllErrorHook?: StoreErrorHandler;
+    /**
+     * Handle failure of allowing all
+     */
     onAllowAllErrorHook?: StoreErrorHandler;
+    /**
+     * Handle failure of saving
+     */
     onSaveErrorHook?: StoreErrorHandler;
+    /**
+     * Handle failure of cancelling
+     */
     onCancelErrorHook?: StoreErrorHandler;
+    /**
+     * Execute code when closing the banner
+     */
+    onBannerClose?: () => void;
+    /**
+     * Execute code when opening the banner
+     */
+    onBannerOpen?: () => void;
 }
 /**
  * Initialize the gdpr-guard logic from the DOM or the provided {@link GdprSavior}
@@ -41,4 +61,4 @@ export interface GdprHtmlManagerOptions {
  * @throws {NoManagerDefinitionError} - If no manager definition can be found
  * (either {@link gdprEl} is `undefined` or `document.querySelector("[data-gdpr]")` returned `null`)
  */
-export declare const restoreHtmlGdprManager: (gdprSavior: GdprSavior, { gdprEl, autoCloseBanner, bindEventHandlersHook, addGuardsBeforeHook, addGuardsAfterHook, onDeclineAllErrorHook, onAllowAllErrorHook, onSaveErrorHook, onCancelErrorHook, }?: GdprHtmlManagerOptions) => Promise<GdprManager>;
+export declare const restoreHtmlGdprManager: (gdprSavior: GdprSavior, { gdprEl, autoCloseBanner, bindEventHandlersHook, addGuardsBeforeHook, addGuardsAfterHook, onDeclineAllErrorHook, onAllowAllErrorHook, onSaveErrorHook, onCancelErrorHook, onBannerClose, onBannerOpen, }?: GdprHtmlManagerOptions) => Promise<GdprManager>;

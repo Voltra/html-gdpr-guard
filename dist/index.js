@@ -86,6 +86,11 @@ var nameFromDOM = function (guardEl, guardDataKey, nameDataKey) {
     }
     return name.trim();
 };
+/**
+ * Get the guard's checkbox from the DOM
+ * @param guardEl - The root of the guard's tree
+ * @param guardName - The guard's name
+ */
 var checkboxFromDOM = function (guardEl, guardName) {
     var e_1, _a;
     var _b;
@@ -112,6 +117,10 @@ var checkboxFromDOM = function (guardEl, guardName) {
     }
     throw new _errors_NoCheckboxError__WEBPACK_IMPORTED_MODULE_2__.NoCheckboxError();
 };
+/**
+ * Retrieve the guard's description from the DOM
+ * @param guardEl - The root of the guard's state tree
+ */
 var descriptionFromDOM = function (guardEl) {
     var _a;
     if (guardEl.hasAttribute("data-gdpr-guard-description")) {
@@ -120,6 +129,10 @@ var descriptionFromDOM = function (guardEl) {
     var descriptionEl = guardEl.querySelector("[data-gdpr-guard-description]");
     return (_a = descriptionEl === null || descriptionEl === void 0 ? void 0 : descriptionEl.textContent) !== null && _a !== void 0 ? _a : null;
 };
+/**
+ * Get the {@link GdprStorage} from the DOM
+ * @param guardEl - The root the guard's state tree
+ */
 var storageFromDOM = function (guardEl) {
     if (guardEl.hasAttribute("data-gdpr-guard-storage")) {
         var rawStorage = guardEl.dataset.gdprGuardStorage;
@@ -129,6 +142,11 @@ var storageFromDOM = function (guardEl) {
     }
     return null;
 };
+/**
+ * Check whether the guard is marked as required in the DOM
+ * @param guardEl - The root of the guard's state tree
+ * @param checkbox - The guard's checkbox
+ */
 var guardIsRequiredInDOM = function (guardEl, checkbox) {
     if (checkbox.required) {
         guardEl.setAttribute("gdpr-guard-required", "");
@@ -142,6 +160,10 @@ var guardIsRequiredInDOM = function (guardEl, checkbox) {
     }
     return false;
 };
+/**
+ * Extract the manager's own details from the DOM
+ * @param gdprEl - The root of the GDPR state tree
+ */
 var parseManagerDetails = function (gdprEl) {
     var managerEl = gdprEl;
     var gdpr = gdprEl.dataset.gdpr;
@@ -466,9 +488,14 @@ var setupStyleSheetsActivation = function (manager) {
  * @param restoreFactory
  */
 var setupButtonsListeners = function (manager, gdprSavior, hooks, restoreFactory) {
+    var doClose = function () {
+        manager.closeBanner();
+        hooks.onBannerClose();
+    };
     _utils_eventBus__WEBPACK_IMPORTED_MODULE_0__.GlobalEventBus.on("click", "[data-gdpr-open]", function (e) {
         e.preventDefault();
         manager.resetAndShowBanner();
+        hooks.onBannerOpen();
     });
     _utils_eventBus__WEBPACK_IMPORTED_MODULE_0__.GlobalEventBus.on("click", "[data-gdpr-decline-all]", function (e) {
         e.preventDefault();
@@ -479,7 +506,7 @@ var setupButtonsListeners = function (manager, gdprSavior, hooks, restoreFactory
                 hooks.onDeclineAllErrorHook(didStore);
             }
             else {
-                manager.closeBanner();
+                doClose();
             }
         }).catch(function (e) { return hooks.onDeclineAllErrorHook(false, e); });
     });
@@ -492,7 +519,7 @@ var setupButtonsListeners = function (manager, gdprSavior, hooks, restoreFactory
                 hooks.onAllowAllErrorHook(didStore);
             }
             else {
-                manager.closeBanner();
+                doClose();
             }
         }).catch(function (e) { return hooks.onAllowAllErrorHook(false, e); });
     });
@@ -516,9 +543,7 @@ var setupButtonsListeners = function (manager, gdprSavior, hooks, restoreFactory
                     case 4:
                         newManager = _a.sent();
                         _a.label = 5;
-                    case 5:
-                        manager.closeBanner();
-                        return [3 /*break*/, 7];
+                    case 5: return [3 /*break*/, 7];
                     case 6:
                         e_1 = _a.sent();
                         hooks.onCancelErrorHook(true, e_1);
@@ -536,7 +561,7 @@ var setupButtonsListeners = function (manager, gdprSavior, hooks, restoreFactory
                 hooks.onSaveErrorHook(didStore);
             }
             else {
-                manager.closeBanner();
+                doClose();
             }
         }).catch(function (e) { return hooks.onSaveErrorHook(e); });
     });
@@ -729,6 +754,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "findChild": () => (/* binding */ findChild),
 /* harmony export */   "forEachChild": () => (/* binding */ forEachChild)
 /* harmony export */ });
+/**
+ * Execute an action/callback on each child
+ * @param rootEl - The parent element
+ * @param action - The action/callback to execute on each child
+ */
 var forEachChild = function (rootEl, action) {
     for (var i = 0; i < rootEl.childElementCount; i += 1) {
         var el = rootEl.children.item(i);
@@ -746,6 +776,11 @@ var findChild = function (rootEl, predicate) {
     }
     return null;
 };
+/**
+ * Find all the children that satisfy the given predicate
+ * @param rootEl - The parent element
+ * @param predicate - The predicate to satisfy
+ */
 var findAllChildren = function (rootEl, predicate) {
     var ret = [];
     for (var i = 0; i < rootEl.childElementCount; i += 1) {
@@ -756,9 +791,19 @@ var findAllChildren = function (rootEl, predicate) {
     }
     return ret;
 };
+/**
+ * Get the first child that matches the given selector
+ * @param rootEl - The parent element
+ * @param selector - The children selector
+ */
 var childSelector = function (rootEl, selector) {
     return findChild(rootEl, function (el) { return el.matches(selector); });
 };
+/**
+ * Get all the children of the given root that match the given selector
+ * @param rootEl - The parent element
+ * @param selector - The children selector
+ */
 var childSelectorAll = function (rootEl, selector) {
     return findAllChildren(rootEl, function (el) { return el.matches(selector); });
 };
@@ -984,9 +1029,6 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 
 
 
-// TODO: Check from tha manager's state on init
-// TODO: Doc blocks
-// TODO: Two-way binding? Would required a wrapper
 // TODO: Reset API in gdpr-guard?
 /**
  * Initialize the gdpr-guard logic from the DOM or the provided {@link GdprSavior}
@@ -997,20 +1039,20 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
  * (either {@link gdprEl} is `undefined` or `document.querySelector("[data-gdpr]")` returned `null`)
  */
 var restoreHtmlGdprManager = function (gdprSavior, _a) {
-    var _b = _a === void 0 ? {} : _a, _c = _b.gdprEl, gdprEl = _c === void 0 ? undefined : _c, _d = _b.autoCloseBanner, autoCloseBanner = _d === void 0 ? true : _d, _e = _b.bindEventHandlersHook, bindEventHandlersHook = _e === void 0 ? function () { } : _e, _f = _b.addGuardsBeforeHook, addGuardsBeforeHook = _f === void 0 ? function () { } : _f, _g = _b.addGuardsAfterHook, addGuardsAfterHook = _g === void 0 ? function () { } : _g, _h = _b.onDeclineAllErrorHook, onDeclineAllErrorHook = _h === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onDeclineAllErrorHook]", didStore, err); } : _h, _j = _b.onAllowAllErrorHook, onAllowAllErrorHook = _j === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onAllowAllErrorHook]", didStore, err); } : _j, _k = _b.onSaveErrorHook, onSaveErrorHook = _k === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onSaveErrorHook]", didStore, err); } : _k, _l = _b.onCancelErrorHook, onCancelErrorHook = _l === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onCancelErrorHook]", didStore, err); } : _l;
+    var _b = _a === void 0 ? {} : _a, _c = _b.gdprEl, gdprEl = _c === void 0 ? undefined : _c, _d = _b.autoCloseBanner, autoCloseBanner = _d === void 0 ? true : _d, _e = _b.bindEventHandlersHook, bindEventHandlersHook = _e === void 0 ? function () { } : _e, _f = _b.addGuardsBeforeHook, addGuardsBeforeHook = _f === void 0 ? function () { } : _f, _g = _b.addGuardsAfterHook, addGuardsAfterHook = _g === void 0 ? function () { } : _g, _h = _b.onDeclineAllErrorHook, onDeclineAllErrorHook = _h === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onDeclineAllErrorHook]", didStore, err); } : _h, _j = _b.onAllowAllErrorHook, onAllowAllErrorHook = _j === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onAllowAllErrorHook]", didStore, err); } : _j, _k = _b.onSaveErrorHook, onSaveErrorHook = _k === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onSaveErrorHook]", didStore, err); } : _k, _l = _b.onCancelErrorHook, onCancelErrorHook = _l === void 0 ? function (didStore, err) { return console.error("[HtmlGdprGuard @ onCancelErrorHook]", didStore, err); } : _l, _m = _b.onBannerClose, onBannerClose = _m === void 0 ? function () { } : _m, _o = _b.onBannerOpen, onBannerOpen = _o === void 0 ? function () { } : _o;
     return __awaiter(void 0, void 0, void 0, function () {
-        var _m, managerEl, managerCheckbox, managerBuilder, parsedGuards, managerFactory, hadManager, manager;
-        var _o;
-        return __generator(this, function (_p) {
-            switch (_p.label) {
+        var _p, managerEl, managerCheckbox, managerBuilder, parsedGuards, managerFactory, hadManager, manager;
+        var _q;
+        return __generator(this, function (_r) {
+            switch (_r.label) {
                 case 0:
                     if (typeof gdprEl === "undefined") {
-                        gdprEl = (_o = document.querySelector("[data-gdpr]")) !== null && _o !== void 0 ? _o : undefined;
+                        gdprEl = (_q = document.querySelector("[data-gdpr]")) !== null && _q !== void 0 ? _q : undefined;
                         if (typeof gdprEl === "undefined") {
                             throw new _errors_NoManagerDefinitionError__WEBPACK_IMPORTED_MODULE_0__.NoManagerDefinitionError();
                         }
                     }
-                    _m = (0,_domainLogic_dataExtractors__WEBPACK_IMPORTED_MODULE_2__.parseManagerDetails)(gdprEl), managerEl = _m.managerEl, managerCheckbox = _m.managerCheckbox;
+                    _p = (0,_domainLogic_dataExtractors__WEBPACK_IMPORTED_MODULE_2__.parseManagerDetails)(gdprEl), managerEl = _p.managerEl, managerCheckbox = _p.managerCheckbox;
                     managerBuilder = gdpr_guard__WEBPACK_IMPORTED_MODULE_1__.GdprManagerBuilder.make();
                     addGuardsBeforeHook(managerBuilder);
                     parsedGuards = (0,_domainLogic_guardsParsing__WEBPACK_IMPORTED_MODULE_3__.addGuardsFromDOM)(managerEl, managerBuilder);
@@ -1020,22 +1062,25 @@ var restoreHtmlGdprManager = function (gdprSavior, _a) {
                     }); }); };
                     return [4 /*yield*/, gdprSavior.exists(false)];
                 case 1:
-                    hadManager = _p.sent();
+                    hadManager = _r.sent();
                     return [4 /*yield*/, gdprSavior.restoreOrCreate(managerFactory)];
                 case 2:
-                    manager = _p.sent();
+                    manager = _r.sent();
+                    (0,_domainLogic_listeners__WEBPACK_IMPORTED_MODULE_4__.setupScriptActivation)(manager);
+                    (0,_domainLogic_listeners__WEBPACK_IMPORTED_MODULE_4__.setupStyleSheetsActivation)(manager);
                     (0,_domainLogic_listeners__WEBPACK_IMPORTED_MODULE_4__.setupCheckboxListeners)(manager, managerCheckbox, parsedGuards, hadManager);
                     (0,_domainLogic_listeners__WEBPACK_IMPORTED_MODULE_4__.setupButtonsListeners)(manager, gdprSavior, {
                         onDeclineAllErrorHook: onDeclineAllErrorHook,
                         onAllowAllErrorHook: onAllowAllErrorHook,
                         onSaveErrorHook: onSaveErrorHook,
                         onCancelErrorHook: onCancelErrorHook,
+                        onBannerClose: onBannerClose,
+                        onBannerOpen: onBannerOpen,
                     }, managerFactory);
-                    (0,_domainLogic_listeners__WEBPACK_IMPORTED_MODULE_4__.setupScriptActivation)(manager);
-                    (0,_domainLogic_listeners__WEBPACK_IMPORTED_MODULE_4__.setupStyleSheetsActivation)(manager);
                     bindEventHandlersHook(manager.events);
                     if (autoCloseBanner && manager.bannerWasShown) {
                         manager.closeBanner();
+                        onBannerClose();
                     }
                     return [2 /*return*/, manager];
             }
