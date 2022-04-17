@@ -48,14 +48,27 @@ export interface GdprHtmlManagerOptions {
 	 */
 	addGuardsAfterHook?: (managerBuilder: GdprManagerBuilder) => void;
 
+	/**
+	 * Handle failure of declining all
+	 */
 	onDeclineAllErrorHook?: StoreErrorHandler;
+
+	/**
+	 * Handle failure of allowing all
+	 */
 	onAllowAllErrorHook?: StoreErrorHandler;
+
+	/**
+	 * Handle failure of saving
+	 */
 	onSaveErrorHook?: StoreErrorHandler;
+
+	/**
+	 * Handle failure of cancelling
+	 */
 	onCancelErrorHook?: StoreErrorHandler;
 }
 
-// TODO: Check from tha manager's state on init
-// TODO: Doc blocks
 // TODO: Two-way binding? Would required a wrapper
 // TODO: Reset API in gdpr-guard?
 

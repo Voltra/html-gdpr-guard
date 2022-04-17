@@ -36,6 +36,11 @@ export const nameFromDOM = (guardEl: HTMLElement, guardDataKey: string, nameData
 	return name.trim();
 };
 
+/**
+ * Get the guard's checkbox from the DOM
+ * @param guardEl - The root of the guard's tree
+ * @param guardName - The guard's name
+ */
 export const checkboxFromDOM = (guardEl: HTMLElement, guardName: string) => {
 	const strategies = [
 		() => document.getElementById(guardName), // by ID
@@ -54,6 +59,10 @@ export const checkboxFromDOM = (guardEl: HTMLElement, guardName: string) => {
 	throw new NoCheckboxError();
 };
 
+/**
+ * Retrieve the guard's description from the DOM
+ * @param guardEl - The root of the guard's state tree
+ */
 export const descriptionFromDOM = (guardEl: HTMLElement) => {
 	if (guardEl.hasAttribute("data-gdpr-guard-description")) {
 		return guardEl.dataset.gdprGuardDescription;
@@ -64,6 +73,10 @@ export const descriptionFromDOM = (guardEl: HTMLElement) => {
 	return descriptionEl?.textContent ?? null;
 };
 
+/**
+ * Get the {@link GdprStorage} from the DOM
+ * @param guardEl - The root the guard's state tree
+ */
 export const storageFromDOM = (guardEl: HTMLElement): GdprStorage|null => {
 	if (guardEl.hasAttribute("data-gdpr-guard-storage")) {
 		const rawStorage = guardEl.dataset.gdprGuardStorage;
@@ -76,6 +89,11 @@ export const storageFromDOM = (guardEl: HTMLElement): GdprStorage|null => {
 	return null;
 };
 
+/**
+ * Check whether the guard is marked as required in the DOM
+ * @param guardEl - The root of the guard's state tree
+ * @param checkbox - The guard's checkbox
+ */
 export const guardIsRequiredInDOM = (guardEl: HTMLElement, checkbox: HTMLInputElement) => {
 	if (checkbox.required) {
 		guardEl.setAttribute("gdpr-guard-required", "");
@@ -91,6 +109,11 @@ export const guardIsRequiredInDOM = (guardEl: HTMLElement, checkbox: HTMLInputEl
 
 	return false;
 };
+
+/**
+ * Extract the manager's own details from the DOM
+ * @param gdprEl - The root of the GDPR state tree
+ */
 export const parseManagerDetails = (gdprEl: HTMLElement) => {
 	let managerEl = gdprEl;
 	const { gdpr } = gdprEl.dataset;
