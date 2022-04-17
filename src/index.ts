@@ -8,7 +8,8 @@ import {
 	setupButtonsListeners,
 	setupCheckboxListeners,
 	setupScriptActivation,
-	setupStyleSheetsActivation
+	setupStyleSheetsActivation,
+	StoreErrorHandler,
 } from "@/domainLogic/listeners";
 
 
@@ -20,34 +21,43 @@ export interface GdprHtmlManagerOptions {
 	gdprEl?: HTMLElement;
 
 	/**
+	 * Whether to auto close the banner (only if it has already been displayed to the user)
+	 * @default true
+	 */
+	autoCloseBanner?: boolean;
+
+	// HOOKS
+
+	/**
 	 * A callback to attach event listeners to the {@link GdprManagerEventHub} before finalizing the setup
 	 * @default () => {}
 	 */
-	bindEventHandlers?: BindEventsCallback;
+	bindEventHandlersHook?: BindEventsCallback;
 
 	/**
 	 * Add guards before the ones parsed from the DOM
 	 * @param managerBuilder
 	 * @default () => {}
 	 */
-	addGuardsBefore?: (managerBuilder: GdprManagerBuilder) => void;
+	addGuardsBeforeHook?: (managerBuilder: GdprManagerBuilder) => void;
 
 	/**
 	 * Add guards after the ones parsed from the DOM
 	 * @param managerBuilder
 	 * @default () => {}
 	 */
-	addGuardsAfter?: (managerBuilder: GdprManagerBuilder) => void;
+	addGuardsAfterHook?: (managerBuilder: GdprManagerBuilder) => void;
 
-	/**
-	 * Whether to auto close the banner (only if it has already been displayed to the user)
-	 * @default true
-	 */
-	autoCloseBanner?: boolean;
+	onDeclineAllErrorHook?: StoreErrorHandler;
+	onAllowAllErrorHook?: StoreErrorHandler;
+	onSaveErrorHook?: StoreErrorHandler;
+	onCancelErrorHook?: StoreErrorHandler;
 }
 
+// TODO: Check from tha manager's state on init
 // TODO: Doc blocks
 // TODO: Two-way binding? Would required a wrapper
+// TODO: Reset API in gdpr-guard?
 
 /**
  * Initialize the gdpr-guard logic from the DOM or the provided {@link GdprSavior}
@@ -59,10 +69,16 @@ export interface GdprHtmlManagerOptions {
  */
 export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 	gdprEl = undefined,
-	bindEventHandlers = () => {},
-	addGuardsBefore = () => {},
-	addGuardsAfter = () => {},
 	autoCloseBanner = true,
+
+	bindEventHandlersHook = () => {},
+	addGuardsBeforeHook = () => {},
+	addGuardsAfterHook = () => {},
+
+	onDeclineAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onDeclineAllErrorHook]", didStore, err),
+	onAllowAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onAllowAllErrorHook]", didStore, err),
+	onSaveErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onSaveErrorHook]", didStore, err),
+	onCancelErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onCancelErrorHook]", didStore, err),
 }: GdprHtmlManagerOptions = {}): Promise<GdprManager> => {
 	if (typeof gdprEl === "undefined") {
 		gdprEl = document.querySelector<HTMLElement>("[data-gdpr]") ?? undefined;
@@ -72,22 +88,29 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 		}
 	}
 
-	const { managerEl, managerCheckbox, managerName } = parseManagerDetails(gdprEl);
+	const { managerEl, managerCheckbox } = parseManagerDetails(gdprEl);
 
 	const managerBuilder = GdprManagerBuilder.make();
 
-	addGuardsBefore(managerBuilder);
+	addGuardsBeforeHook(managerBuilder);
 	const parsedGuards = addGuardsFromDOM(managerEl, managerBuilder);
-	addGuardsAfter(managerBuilder);
+	addGuardsAfterHook(managerBuilder);
 
-	const manager = await gdprSavior.restoreOrCreate(async () => managerBuilder.build());
+	const managerFactory = async () => managerBuilder.build();
+	const hadManager = await gdprSavior.exists(false);
+	const manager = await gdprSavior.restoreOrCreate(managerFactory);
 
-	setupCheckboxListeners(manager, managerCheckbox, parsedGuards);
-	setupButtonsListeners(manager, gdprSavior);
+	setupCheckboxListeners(manager, managerCheckbox, parsedGuards, hadManager);
+	setupButtonsListeners(manager, gdprSavior, {
+		onDeclineAllErrorHook,
+		onAllowAllErrorHook,
+		onSaveErrorHook,
+		onCancelErrorHook,
+	}, managerFactory);
 	setupScriptActivation(manager);
 	setupStyleSheetsActivation(manager);
 
-	bindEventHandlers(manager.events);
+	bindEventHandlersHook(manager.events);
 
 	if (autoCloseBanner && manager.bannerWasShown) {
 		manager.closeBanner();

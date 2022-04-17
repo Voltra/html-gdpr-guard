@@ -21,18 +21,22 @@ module.exports = {
 				include: here("src/"),
 				exclude: [
 					"node_modules/",
-					"tests/"
+					"tests/",
+					"example/",
 				].map(here),
 			},
 		],
 	},
 	resolve: {
 		extensions: ["ts", "js", "tsx"].map(ext => `.${ext}`),
+		alias: {
+			"@": path.resolve(__dirname, "src"),
+		},
 	},
 	output: {
 		filename: "index.js",
 		path: here("dist"),
 		library: "htmlGdprGuard",
-		libraryTarget: "umd",
+		libraryTarget: "umd2",
 	},
 };
