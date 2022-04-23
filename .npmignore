@@ -1,9 +1,8 @@
 **/tsconfig.json
 **/nodemon.json
 **/tslint.json
-**/webpack.config.js
-**/jest.config.js
-**/typedoc.config.js
+**/*.config.js
+.editorconfig
 src
 demo
 example
