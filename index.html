@@ -1,0 +1,201 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>html-gdpr-guard - v1.0.0</title><meta name="description" content="Documentation for html-gdpr-guard - v1.0.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">html-gdpr-guard - v1.0.0</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1> html-gdpr-guard - v1.0.0</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#html-gdpr-guard" id="html-gdpr-guard" style="color: inherit; text-decoration: none;">
+  <h1>html-gdpr-guard</h1>
+</a>
+<blockquote>
+<p>Vanilla JavaScript binding to gdpr-guard as efficiently and easily as possible, based on data provided in the DOM</p>
+</blockquote>
+<center><img src="https://github.com/Voltra/html-gdpr-guard/raw/master/html-gdpr-guard.png" alt="html-gdpr-guard logo"/></center>
+
+<p>You can have a look at the <a href="https://voltra.github.io/html-gdpr-guard">demo</a> to see it in action and inspect the DOM.</p>
+
+<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+  <h2>Install</h2>
+</a>
+<p>Via NPM: <code>npm i -S html-gdpr-guard</code></p>
+<p>Via Yarn: <code>yarn add html-gdpr-guard</code></p>
+<p>As a 3rd-party script tag:</p>
+<pre><code class="language-html"><span class="hl-0">&lt;</span><span class="hl-1">script</span><span class="hl-2"> </span><span class="hl-3">src</span><span class="hl-2">=</span><span class="hl-4">&quot;/path/to/dist/index.js&quot;</span><span class="hl-0">&gt;&lt;/</span><span class="hl-1">script</span><span class="hl-0">&gt;</span>
+</code></pre>
+
+<a href="#use" id="use" style="color: inherit; text-decoration: none;">
+  <h2>Use</h2>
+</a>
+<p>Using modules:</p>
+<pre><code class="language-javascript"><span class="hl-5">import</span><span class="hl-6"> {</span><br/><span class="hl-6">    </span><span class="hl-7">restoreHtmlGdprManager</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-8">//</span><br/><span class="hl-6">    </span><span class="hl-7">HtmlGdprGuardError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-7">NoManagerDefinitionError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-7">NoNameError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-7">NoCheckboxError</span><span class="hl-6">,</span><br/><span class="hl-6">} </span><span class="hl-5">from</span><span class="hl-6"> </span><span class="hl-9">&quot;html-gdpr-guard&quot;</span>
+</code></pre>
+<p>Using commonjs:</p>
+<pre><code class="language-javascript"><span class="hl-10">const</span><span class="hl-6"> {</span><br/><span class="hl-6">    </span><span class="hl-11">restoreHtmlGdprManager</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-8">//</span><br/><span class="hl-6">    </span><span class="hl-11">HtmlGdprGuardError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-11">NoManagerDefinitionError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-11">NoNameError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-11">NoCheckboxError</span><span class="hl-6">,</span><br/><span class="hl-6">} = </span><span class="hl-12">require</span><span class="hl-6">(</span><span class="hl-9">&quot;html-gdpr-guard&quot;</span><span class="hl-6">);</span>
+</code></pre>
+<p>In the browser:</p>
+<pre><code class="language-javascript"><span class="hl-10">const</span><span class="hl-6"> {</span><br/><span class="hl-6">    </span><span class="hl-11">restoreHtmlGdprManager</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-8">//</span><br/><span class="hl-6">    </span><span class="hl-11">HtmlGdprGuardError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-11">NoManagerDefinitionError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-11">NoNameError</span><span class="hl-6">,</span><br/><span class="hl-6">    </span><span class="hl-11">NoCheckboxError</span><span class="hl-6">,</span><br/><span class="hl-6">} = </span><span class="hl-7">htmlGdprGuard</span><span class="hl-6">;</span>
+</code></pre>
+
+<a href="#restore-your-manager-instance" id="restore-your-manager-instance" style="color: inherit; text-decoration: none;">
+  <h2>Restore your manager instance</h2>
+</a>
+<p>To restore your manager instance, you will need an instance of <a href="https://www.ludwig-guerin.fr/gdpr-guard/interfaces/serde_GdprSavior.GdprSavior.html"><code>GdprSavior</code></a>.
+The simplest one is <a href="https://www.npmjs.com/package/gdpr-guard-local">gdpr-guard-local</a> which relies on local storage.</p>
+<p>The simplest way to restore your manager is to let the library do everything:</p>
+<pre><code class="language-javascript"><span class="hl-10">const</span><span class="hl-6"> </span><span class="hl-11">gdprSavior</span><span class="hl-6"> = </span><span class="hl-12">getMyGdprSavior</span><span class="hl-6">();</span><br/><span class="hl-10">const</span><span class="hl-6"> </span><span class="hl-11">manager</span><span class="hl-6"> = </span><span class="hl-5">await</span><span class="hl-6"> </span><span class="hl-12">restoreHtmlGdprManager</span><span class="hl-6">(</span><span class="hl-7">gdprSavior</span><span class="hl-6">);</span>
+</code></pre>
+<p>If it fails, it will throw an instance of <code>HtmlGdprGuardError</code> which can be one of the following:</p>
+<ul>
+<li><code>NoManagerDefinitionError</code></li>
+<li><code>NoNameError</code></li>
+<li><code>NoCheckboxError</code></li>
+</ul>
+
+<a href="#create-your-dom-structure" id="create-your-dom-structure" style="color: inherit; text-decoration: none;">
+  <h2>Create your DOM structure</h2>
+</a>
+
+<a href="#a-guard39s-data" id="a-guard39s-data" style="color: inherit; text-decoration: none;">
+  <h3>A guard&#39;s data</h3>
+</a>
+
+<a href="#guard-name-mandatory" id="guard-name-mandatory" style="color: inherit; text-decoration: none;">
+  <h4>Guard name (mandatory)</h4>
+</a>
+<p>A guard&#39;s data is scoped within the root element that is marked using the <code>data-gdpr-guard</code> attribute.
+That attribute can contain the name of your guard, otherwise the first element that has a <code>data-gdpr-guard-name</code>
+will be used to retrieve the guard&#39;s name. <strong>It is mandatory</strong></p>
+
+<a href="#guard-description-optional" id="guard-description-optional" style="color: inherit; text-decoration: none;">
+  <h4>Guard description (optional)</h4>
+</a>
+<p>The guard&#39;s description can be added via a <code>data-gdpr-guard-description</code> with a value on the root element, or
+you can tag an element with <code>data-gdpr-guard-description</code> whose <code>textContent</code> will be treated as its description.
+<strong>It is optional</strong></p>
+<p>It will default to an empty string. Note that if the description is the attribute&#39;s value it won&#39;t be shown to the user.</p>
+
+<a href="#guard-storage-optional" id="guard-storage-optional" style="color: inherit; text-decoration: none;">
+  <h4>Guard storage (optional)</h4>
+</a>
+<p>The guard&#39;s storage can be added via a <code>data-gdpr-guard-storage</code> attribute whose value should be the key in the <a href="https://www.ludwig-guerin.fr/gdpr-guard/enums/GdprStorage.GdprStorage-1.html"><code>GdprStorage</code></a> enum. <strong>It is optional</strong></p>
+
+<a href="#guard-checkbox-mandatory" id="guard-checkbox-mandatory" style="color: inherit; text-decoration: none;">
+  <h4>Guard checkbox (mandatory)</h4>
+</a>
+<p>The checkbox that controls the guard is resolved (among the guard&#39;s children) in the following order based on the guard&#39;s name:</p>
+<ul>
+<li>checkbox whose ID is the guard&#39;s name</li>
+<li>checkbox whose <code>name</code> attribute is the guard&#39;s name</li>
+<li>first checkbox marked with the <code>data-gdpr-checkbox</code> attribute</li>
+</ul>
+
+<a href="#guard39s-required-status-optional" id="guard39s-required-status-optional" style="color: inherit; text-decoration: none;">
+  <h4>Guard&#39;s required status (optional)</h4>
+</a>
+<p>To mark the guard as required you can:</p>
+<ul>
+<li>Add the <code>gdpr-guard-required</code> attribute on the guard&#39;s root element</li>
+<li>Add the <code>required</code> attribute on the guard&#39;s checkbox</li>
+</ul>
+<p>Note that, just like the way <code>gdpr-guard</code> handles required guards, if a parent is required
+then all of its children will be as well.</p>
+<p>You don&#39;t <em>have</em> to make your checkbox required and disabled, it will be all synced up as the guard is parsed.</p>
+
+<a href="#a-group39s-data" id="a-group39s-data" style="color: inherit; text-decoration: none;">
+  <h2>A group&#39;s data</h2>
+</a>
+<p>A group behaves exactly like a guard, except that its root is marked using <code>data-gdpr-group</code> instead of <code>data-gdpr-guard</code>.</p>
+
+<a href="#the-manager39s-data" id="the-manager39s-data" style="color: inherit; text-decoration: none;">
+  <h3>The manager&#39;s data</h3>
+</a>
+<p>The manager behaves a little bit like a guard, but has specific attributes:</p>
+<ul>
+<li><code>data-gdpr</code> is used to find the root of your manager, unless you provide it in <code>restoreHtmlGdprManager</code>&#39;s options. Its value is treated as the manager&#39;s name. You don&#39;t have to give it a value. You can skip it altogether.</li>
+<li><code>data-gdpr-manager</code> that can be used to store the name of the manager if you didn&#39;t provide a value to the <code>data-gdpr</code> attribute (or the attribute itself)</li>
+</ul>
+
+<a href="#customize-the-restoration-process" id="customize-the-restoration-process" style="color: inherit; text-decoration: none;">
+  <h2>Customize the restoration process</h2>
+</a>
+<p>You can pass a set of options as the second argument of <code>restoreHtmlGdprManager</code>. Let&#39;s inspect them one by one.</p>
+
+<a href="#gdprel-htmlelement" id="gdprel-htmlelement" style="color: inherit; text-decoration: none;">
+  <h3><code>gdprEl</code> HTMLElement</h3>
+</a>
+<p>The html element that will serve as root of the manager&#39;s definitions. By default, it will use <code>document.querySelector(&quot;[data-gdpr]&quot;)</code>.</p>
+<p>If the manager can&#39;t be found, it&#39;ll throw a <code>NoManagerDefinitionError</code>.</p>
+
+<a href="#autoclosebanner-bool" id="autoclosebanner-bool" style="color: inherit; text-decoration: none;">
+  <h3><code>autoCloseBanner</code> bool</h3>
+</a>
+<p>Whether the banner should be automatically closed once the manager has been restored if the consent banner has already been shown.</p>
+
+<a href="#bindeventhandlershook-function" id="bindeventhandlershook-function" style="color: inherit; text-decoration: none;">
+  <h3><code>bindEventHandlersHook</code> function</h3>
+</a>
+<p>A callback that can be used to attach event listeners to the manager&#39;s <a href="https://www.ludwig-guerin.fr/gdpr-guard/classes/GdprManagerEventHub.GdprManagerEventHub-1.html"><code>GdprManagerEventHub</code></a>.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">BindEventsCallback</span><span class="hl-6"> = (</span><span class="hl-7">eventsHub</span><span class="hl-6">: </span><span class="hl-13">GdprManagerEventHub</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+<p>For instance:</p>
+<pre><code class="language-javascript"><span class="hl-5">await</span><span class="hl-6"> </span><span class="hl-12">restoreHtmlGdprManager</span><span class="hl-6">(</span><span class="hl-7">gdprSavior</span><span class="hl-6">, {</span><br/><span class="hl-6">    </span><span class="hl-12">bindEventHandlersHook</span><span class="hl-6">(</span><span class="hl-7">eventsHub</span><span class="hl-6">) {</span><br/><span class="hl-6">        </span><span class="hl-7">eventsHub</span><span class="hl-6">.</span><span class="hl-12">onEnable</span><span class="hl-6">(</span><span class="hl-9">&quot;myGuard&quot;</span><span class="hl-6">, () </span><span class="hl-10">=&gt;</span><span class="hl-6"> {</span><br/><span class="hl-6">            </span><span class="hl-12">connectToWsApi</span><span class="hl-6">();</span><br/><span class="hl-6">        });</span><br/><br/><span class="hl-6">        </span><span class="hl-7">eventsHub</span><span class="hl-6">.</span><span class="hl-12">onDisable</span><span class="hl-6">(</span><span class="hl-9">&quot;myGuard&quot;</span><span class="hl-6">, () </span><span class="hl-10">=&gt;</span><span class="hl-6"> {</span><br/><span class="hl-6">            </span><span class="hl-12">disconnectFromWsApi</span><span class="hl-6">();</span><br/><span class="hl-6">        });</span><br/><span class="hl-6">    },</span><br/><span class="hl-6">});</span>
+</code></pre>
+
+<a href="#addguardsbeforehook-function" id="addguardsbeforehook-function" style="color: inherit; text-decoration: none;">
+  <h3><code>addGuardsBeforeHook</code> function</h3>
+</a>
+<p>A callback that can be used to add guards&#39; definitions to the <a href="https://www.ludwig-guerin.fr/gdpr-guard/classes/builders_GdprManagerBuilder.GdprManagerBuilder.html"><code>GdprManagerBuilder</code></a> instance before the library parses data from the DOM.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">AddGuardsCallback</span><span class="hl-6"> = (</span><span class="hl-7">managerBuilder</span><span class="hl-6">: </span><span class="hl-13">GdprManagerBuilder</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+
+<a href="#addguardsafterhook-function" id="addguardsafterhook-function" style="color: inherit; text-decoration: none;">
+  <h3><code>addGuardsAfterHook</code> function</h3>
+</a>
+<p>A callback that can be used to add guards&#39; definitions to the <a href="https://www.ludwig-guerin.fr/gdpr-guard/classes/builders_GdprManagerBuilder.GdprManagerBuilder.html"><code>GdprManagerBuilder</code></a> instance after the library parsed data from the DOM.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">AddGuardsCallback</span><span class="hl-6"> = (</span><span class="hl-7">managerBuilder</span><span class="hl-6">: </span><span class="hl-13">GdprManagerBuilder</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+
+<a href="#ondeclineallerrorhook-function" id="ondeclineallerrorhook-function" style="color: inherit; text-decoration: none;">
+  <h3><code>onDeclineAllErrorHook</code> function</h3>
+</a>
+<p>A callback that can be used to hande/capture errors when the user click on a &quot;decline all&quot; button.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">StoreErrorHandler</span><span class="hl-6"> = (</span><span class="hl-7">didStore</span><span class="hl-6">: </span><span class="hl-13">boolean</span><span class="hl-6">, </span><span class="hl-7">error</span><span class="hl-6">?: </span><span class="hl-13">Error</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+
+<a href="#onsaveerrorhook-function" id="onsaveerrorhook-function" style="color: inherit; text-decoration: none;">
+  <h3><code>onSaveErrorHook</code> function</h3>
+</a>
+<p>A callback that can be used to hande/capture errors when the user saves their preferences.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">StoreErrorHandler</span><span class="hl-6"> = (</span><span class="hl-7">didStore</span><span class="hl-6">: </span><span class="hl-13">boolean</span><span class="hl-6">, </span><span class="hl-7">error</span><span class="hl-6">?: </span><span class="hl-13">Error</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+
+<a href="#oncancelerrorhook-function" id="oncancelerrorhook-function" style="color: inherit; text-decoration: none;">
+  <h3><code>onCancelErrorHook</code> function</h3>
+</a>
+<p>A callback that can be used to hande/capture errors when the user click on a &quot;cancel&quot; button.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">StoreErrorHandler</span><span class="hl-6"> = (</span><span class="hl-7">didStore</span><span class="hl-6">: </span><span class="hl-13">boolean</span><span class="hl-6">, </span><span class="hl-7">error</span><span class="hl-6">?: </span><span class="hl-13">Error</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+
+<a href="#onbannerclose-function" id="onbannerclose-function" style="color: inherit; text-decoration: none;">
+  <h3><code>onBannerClose</code> function</h3>
+</a>
+<p>A callback that can be used to execute code when the GDPR banner is closed.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">BannerCallback</span><span class="hl-6"> = () </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+<p>For instance:</p>
+<pre><code class="language-javascript"><span class="hl-5">await</span><span class="hl-6"> </span><span class="hl-12">restoreHtmlGdprManager</span><span class="hl-6">(</span><span class="hl-7">gdprSavior</span><span class="hl-6">, {</span><br/><span class="hl-6">    </span><span class="hl-12">onBannerClose</span><span class="hl-6">() {</span><br/><span class="hl-6">        </span><span class="hl-12">hideMyGdprBanner</span><span class="hl-6">();</span><br/><span class="hl-6">    },</span><br/><span class="hl-6">});</span>
+</code></pre>
+
+<a href="#onbanneropen-function" id="onbanneropen-function" style="color: inherit; text-decoration: none;">
+  <h3><code>onBannerOpen</code> function</h3>
+</a>
+<p>A callback that can be used to execute code when the GDPR banner is closed.</p>
+<p>The callback&#39;s signature is the following:</p>
+<pre><code class="language-typescript"><span class="hl-10">type</span><span class="hl-6"> </span><span class="hl-13">BannerCallback</span><span class="hl-6"> = () </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-13">void</span><span class="hl-6">;</span>
+</code></pre>
+<p>For instance:</p>
+<pre><code class="language-javascript"><span class="hl-5">await</span><span class="hl-6"> </span><span class="hl-12">restoreHtmlGdprManager</span><span class="hl-6">(</span><span class="hl-7">gdprSavior</span><span class="hl-6">, {</span><br/><span class="hl-6">    </span><span class="hl-12">onBannerOpen</span><span class="hl-6">() {</span><br/><span class="hl-6">        </span><span class="hl-12">showMyGdprBanner</span><span class="hl-6">();</span><br/><span class="hl-6">    },</span><br/><span class="hl-6">});</span>
+</code></pre>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Modules</a></li><li class=" tsd-kind-module"><a href="modules/domainLogic_dataExtractors.html">domain<wbr/>Logic/data<wbr/>Extractors</a></li><li class=" tsd-kind-module"><a href="modules/domainLogic_guardsParsing.html">domain<wbr/>Logic/guards<wbr/>Parsing</a></li><li class=" tsd-kind-module"><a href="modules/domainLogic_listeners.html">domain<wbr/>Logic/listeners</a></li><li class=" tsd-kind-module"><a href="modules/errors.html">errors</a></li><li class=" tsd-kind-module"><a href="modules/errors_HtmlGdprGuardError.html">errors/<wbr/>Html<wbr/>Gdpr<wbr/>Guard<wbr/>Error</a></li><li class=" tsd-kind-module"><a href="modules/errors_NoCheckboxError.html">errors/<wbr/>No<wbr/>Checkbox<wbr/>Error</a></li><li class=" tsd-kind-module"><a href="modules/errors_NoManagerDefinitionError.html">errors/<wbr/>No<wbr/>Manager<wbr/>Definition<wbr/>Error</a></li><li class=" tsd-kind-module"><a href="modules/errors_NoNameError.html">errors/<wbr/>No<wbr/>Name<wbr/>Error</a></li><li class=" tsd-kind-module"><a href="modules/index.html">index</a></li><li class=" tsd-kind-module"><a href="modules/utils_dom.html">utils/dom</a></li><li class=" tsd-kind-module"><a href="modules/utils_eventBus.html">utils/event<wbr/>Bus</a></li><li class=" tsd-kind-module"><a href="modules/utils_misc.html">utils/misc</a></li></ul></nav></div></div></div><footer class=""><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li><li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li><li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li><li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="overlay"></div><script src="assets/main.js"></script></body></html>
