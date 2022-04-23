@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8"/>
+		<title>html-gdpr-guard DEMO</title>
+
+		<link rel="stylesheet" href="./main.css"/>
+		<script defer src="https://cdn.jsdelivr.net/npm/micromodal@0.4.10/dist/micromodal.min.js" integrity="sha256-RtwfGO9f2IexK3ooZsgkpwl7YsYSfuQBb1G62RGLtqc=" crossorigin="anonymous"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/gdpr-guard-local@1.1.0/dist/index.min.js"></script>
+		<script defer src="../dist/index.js"></script>
+		<script defer src="index.js"></script>
+
+		<link data-gdpr-on-enable="3rdparty" rel="none" href="./3rd-party.css"/>
+		<script data-gdpr-on-enable="3rdparty" type="text" src="./3rd-party.js"></script>
+	</head>
+	<body>
+		<header>
+			Some random nav and stuff
+		</header>
+
+		<main>
+			<div id="app">
+				lorem ipsum
+			</div>
+
+			<div id="gdpr-modal" aria-hidden="true">
+				<div class="backdrop" tabindex="-1" data-micromodal-close>
+					<!-- Or data-gdpr="managerName" to make it more concise and avoid the [data-gdpr-manager] element -->
+					<article class="modal" role="dialog" aria-modal="true" data-gdpr>
+						<div data-gdpr-manager="managerName">
+							<h2>
+								GDPR Settings
+							</h2>
+
+							<label>
+								Allow?
+								<input type="checkbox" name="managerName" checked/>
+							</label>
+
+							<p data-gdpr-guard-description>
+								Description from DOM
+							</p>
+
+							<div>
+								<button class="btn -failure" data-gdpr-decline-all>
+									Decline all
+								</button>
+
+								<button class="btn -success" data-gdpr-allow-all>
+									Allow all
+								</button>
+							</div>
+
+							<article class="gdpr-guard" data-gdpr-guard="guardName">
+								<h4>
+									Solo guard at the top level
+								</h4>
+
+								<label>
+									Allow?
+									<input type="checkbox" name="guardName"/>
+								</label>
+
+								<p data-gdpr-guard-description>
+									Yet another description from the DOM
+								</p>
+							</article>
+
+							<section class="gdpr-guard" data-gdpr-group="groupName" data-gdpr-guard-description="test">
+								<h3>
+									First group
+								</h3>
+
+								<label>
+									Allow?
+									<input type="checkbox" name="groupName" checked/>
+								</label>
+
+								<article class="gdpr-guard" data-gdpr-guard>
+									<h4 data-gdpr-guard-name>
+										My guard name from the DOM
+									</h4>
+
+									<label>
+										Allow?
+										<input data-gdpr-checkbox type="checkbox" name="someRandomKey"/>
+									</label>
+								</article>
+
+								<article class="gdpr-guard" data-gdpr-guard="3rdparty" data-gdpr-guard-storage="LocalStorage">
+									<h4>
+										3rd party
+									</h4>
+
+									<label>
+										Allow?
+										<input type="checkbox" name="3rdparty"/>
+									</label>
+								</article>
+							</section>
+
+							<section class="gdpr-guard" data-gdpr-group="requiredGroup" data-gdpr-guard-description="test" data-gdpr-guard-required>
+								<h3>
+									My required group
+								</h3>
+
+								<label>
+									Allow?
+									<input type="checkbox" id="requiredGroup" checked/>
+								</label>
+
+								<article class="gdpr-guard" data-gdpr-guard>
+									<h4 data-gdpr-guard-name>
+										My guard name from the DOM (look I'm required even though I didn't make it so!)
+									</h4>
+
+									<label>
+										Allow?
+										<input data-gdpr-checkbox type="checkbox" name="someRandomKey2"/>
+									</label>
+								</article>
+
+								<article class="gdpr-guard" data-gdpr-guard="myReqGuard">
+									<h4>
+										Yup, required too
+									</h4>
+
+									<label>
+										Allow?
+										<input type="checkbox" name="myReqGuard"/>
+									</label>
+								</article>
+							</section>
+
+							<div>
+								<button class="btn" data-gdpr-cancel>
+									Cancel
+								</button>
+
+								<button class="btn -success" data-gdpr-save>
+									Save
+								</button>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+
+			<aside id="gdpr-banner" data-gdpr-banner>
+				<p>
+					This website uses cookies to ensure you get the best experience.
+					<a href="#">
+						Learn more
+					</a>
+				</p>
+
+				<div>
+					<button data-gdpr-open class="btn" data-micromodal-trigger="gdpr-modal">
+						Choose
+					</button>
+
+					<button data-gdpr-decline-all class="btn -failure">
+						Decline
+					</button>
+
+					<button data-gdpr-allow-all class="btn -success">
+						Allow
+					</button>
+				</div>
+			</aside>
+		</main>
+
+		<footer>
+			<button data-gdpr-open class="btn">
+				Open GDPR settings
+			</button>
+		</footer>
+	</body>
+</html>

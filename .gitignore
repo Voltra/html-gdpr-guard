@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+docs/
+tmp/
+node_modules/
+
+.brackets.json
+*.log
+*.env

@@ -1,0 +1,10 @@
+**/tsconfig.json
+**/nodemon.json
+**/tslint.json
+**/*.config.js
+.editorconfig
+src
+demo
+example
+docs
+*.png
