@@ -64,7 +64,7 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 					const clonedItem = (
 						isScript
 							? document.createElement("script")
-							: item.cloneNode(false)
+							: item.cloneNode(true)
 					) as ItemType;
 
 					if (isScript) {
@@ -193,7 +193,7 @@ export const setupButtonsListeners = (
 				if (hadManager) {
 					await gdprSavior.restore(true);
 				} else {
-					const newManager = await gdprSavior.restoreOrCreate(restoreFactory);
+					await gdprSavior.restoreOrCreate(restoreFactory);
 					//TODO: Use save/restore new API (when it's out, for now the savior API has to suffice)
 				}
 			} catch(e) {

@@ -27,7 +27,7 @@
 				<div class="backdrop" tabindex="-1" data-micromodal-close>
 					<!-- Or data-gdpr="managerName" to make it more concise and avoid the [data-gdpr-manager] element -->
 					<article class="modal" role="dialog" aria-modal="true" data-gdpr>
-						<div class="gdpr-guard" data-gdpr-manager="managerName">
+						<div data-gdpr-manager="managerName">
 							<h2>
 								GDPR Settings
 							</h2>
@@ -94,7 +94,40 @@
 
 									<label>
 										Allow?
-										<input data-gdpr-checkbox type="checkbox" name="3rdparty"/>
+										<input type="checkbox" name="3rdparty"/>
+									</label>
+								</article>
+							</section>
+
+							<section class="gdpr-guard" data-gdpr-group="requiredGroup" data-gdpr-guard-description="test" data-gdpr-guard-required>
+								<h3>
+									My required group
+								</h3>
+
+								<label>
+									Allow?
+									<input type="checkbox" id="requiredGroup" checked/>
+								</label>
+
+								<article class="gdpr-guard" data-gdpr-guard>
+									<h4 data-gdpr-guard-name>
+										My guard name from the DOM (look I'm required even though I didn't make it so!)
+									</h4>
+
+									<label>
+										Allow?
+										<input data-gdpr-checkbox type="checkbox" name="someRandomKey2"/>
+									</label>
+								</article>
+
+								<article class="gdpr-guard" data-gdpr-guard="myReqGuard">
+									<h4>
+										Yup, required too
+									</h4>
+
+									<label>
+										Allow?
+										<input type="checkbox" name="myReqGuard"/>
 									</label>
 								</article>
 							</section>

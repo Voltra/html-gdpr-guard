@@ -45,7 +45,7 @@ export const checkboxFromDOM = (guardEl: HTMLElement, guardName: string) => {
 	const strategies = [
 		() => document.getElementById(guardName), // by ID
 		() => guardEl.querySelector(`[type="checkbox"][name="${guardName}"]`), // by name
-		() => guardEl.querySelector(`[data-gdpr-checkbox]`), // by specific attribute
+		() => guardEl.querySelector(`[type="checkbox"][data-gdpr-checkbox]`), // by specific attribute
 	];
 
 	for (const strategy of strategies) {
@@ -95,20 +95,41 @@ export const storageFromDOM = (guardEl: HTMLElement): GdprStorage|null => {
  * @param checkbox - The guard's checkbox
  */
 export const guardIsRequiredInDOM = (guardEl: HTMLElement, checkbox: HTMLInputElement) => {
-	if (checkbox.required) {
-		guardEl.setAttribute("gdpr-guard-required", "");
-		checkbox.setAttribute("checked", "checked");
-		return true;
-	}
-
-	if (guardEl.hasAttribute("gdpr-guard-required")) {
-		checkbox.setAttribute("required", "required");
-		checkbox.setAttribute("checked", "checked");
-		return true;
-	}
-
-	return false;
+	return checkbox.required || guardEl.hasAttribute("data-gdpr-guard-required");
 };
+
+/**
+ * Sync the required status across all attributes in the DOM
+ * @param guardEl - The root of the guard's state tree
+ * @param checkbox - The guard's checkbox
+ * @param isRequired - Whether the guard is already marked as required
+ */
+export const syncRequiredInDOM = (guardEl: HTMLElement, checkbox: HTMLInputElement, isRequired: boolean = false) => {
+	const makeCheckedDisabled = () => {
+		checkbox.setAttribute("checked", "checked");
+		checkbox.setAttribute("disabled", "disabled");
+	};
+
+	const makeRequired = () => {
+		checkbox.setAttribute("required", "required");
+	};
+
+	const addGdprRequiredAttr = () => {
+		guardEl.setAttribute("data-gdpr-guard-required", "");
+	};
+
+	if(isRequired) {
+		addGdprRequiredAttr();
+		makeCheckedDisabled();
+		makeRequired();
+	} else if (checkbox.required) {
+		addGdprRequiredAttr();
+		makeCheckedDisabled();
+	} else if (guardEl.hasAttribute("data-gdpr-guard-required")) {
+		makeCheckedDisabled();
+		makeRequired();
+	}
+}
 
 /**
  * Extract the manager's own details from the DOM

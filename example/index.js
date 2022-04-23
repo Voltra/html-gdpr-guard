@@ -13,7 +13,7 @@ document.querySelectorAll("[data-gdpr-open]")
 	.forEach(el => {
 		el.addEventListener("click", () => {
 			MicroModal.show("gdpr-modal");
-		});
+		}, { passive: true });
 	});
 
 document.querySelectorAll("[data-gdpr-allow-all], [data-gdpr-decline-all], [data-gdpr-save], [data-gdpr-cancel]")
@@ -21,7 +21,7 @@ document.querySelectorAll("[data-gdpr-allow-all], [data-gdpr-decline-all], [data
 		el.addEventListener("click", () => {
 			window.gdprManager.closeBanner();
 			MicroModal.close("gdpr-modal");
-		})
+		}, { passive: true })
 	});
 
 const banner = document.querySelector("[data-gdpr-banner]");

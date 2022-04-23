@@ -4,7 +4,7 @@ import {
 	descriptionFromDOM,
 	guardIsRequiredInDOM,
 	nameFromDOM,
-	storageFromDOM
+	storageFromDOM, syncRequiredInDOM
 } from "@/domainLogic/dataExtractors";
 import { childSelectorAll, forEachChild } from "@/utils/dom";
 
@@ -27,7 +27,8 @@ const addGuard = (guardEl: HTMLElement, groupBuilder: GdprGroupBuilder, parentRe
 
 	const checkbox = checkboxFromDOM(guardEl, name);
 
-	const isRequired = parentRequired || guardIsRequiredInDOM(guardEl, checkbox)
+	const isRequired = parentRequired || guardIsRequiredInDOM(guardEl, checkbox);
+	syncRequiredInDOM(guardEl, checkbox, isRequired);
 
 	if (isRequired) {
 		guardBuilder.required().enabled();
@@ -78,7 +79,8 @@ const addGroup = (groupEl: HTMLElement, managerBuilder: GdprManagerBuilder, pare
 		checkbox,
 	}];
 
-	const isRequired = parentRequired || guardIsRequiredInDOM(groupEl, checkbox)
+	const isRequired = parentRequired || guardIsRequiredInDOM(groupEl, checkbox);
+	syncRequiredInDOM(groupEl, checkbox, isRequired);
 
 	if (isRequired) {
 		groupBuilder.required().enabled();
@@ -122,7 +124,7 @@ const addChildGuards = (rootEl: HTMLElement, groupBuilder: GdprGroupBuilder, req
 		if (el?.matches("[data-gdpr-group]")) {
 			const guards = addGroup(el as HTMLElement, groupBuilder, required);
 			parsedGuards.push(...guards);
-		} else if (el?.matches("[data-gdpr-guard")) {
+		} else if (el?.matches("[data-gdpr-guard]")) {
 			const guard = addGuard(el as HTMLElement, groupBuilder, required);
 			parsedGuards.push(guard);
 		}

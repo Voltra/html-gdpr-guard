@@ -30,6 +30,13 @@ export declare const storageFromDOM: (guardEl: HTMLElement) => GdprStorage | nul
  */
 export declare const guardIsRequiredInDOM: (guardEl: HTMLElement, checkbox: HTMLInputElement) => boolean;
 /**
+ * Sync the required status across all attributes in the DOM
+ * @param guardEl - The root of the guard's state tree
+ * @param checkbox - The guard's checkbox
+ * @param isRequired - Whether the guard is already marked as required
+ */
+export declare const syncRequiredInDOM: (guardEl: HTMLElement, checkbox: HTMLInputElement, isRequired?: boolean) => void;
+/**
  * Extract the manager's own details from the DOM
  * @param gdprEl - The root of the GDPR state tree
  */

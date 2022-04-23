@@ -1,5 +1,6 @@
 import { GdprManager, GdprManagerBuilder, GdprSavior } from "gdpr-guard";
 import { BindEventsCallback, StoreErrorHandler } from "@/domainLogic/listeners";
+export declare type AddGuardsCallback = (managerBuilder: GdprManagerBuilder) => void;
 export interface GdprHtmlManagerOptions {
     /**
      * The element that serves as the root of the GDPR manager's definition in the DOM
@@ -21,13 +22,13 @@ export interface GdprHtmlManagerOptions {
      * @param managerBuilder
      * @default () => {}
      */
-    addGuardsBeforeHook?: (managerBuilder: GdprManagerBuilder) => void;
+    addGuardsBeforeHook?: AddGuardsCallback;
     /**
      * Add guards after the ones parsed from the DOM
      * @param managerBuilder
      * @default () => {}
      */
-    addGuardsAfterHook?: (managerBuilder: GdprManagerBuilder) => void;
+    addGuardsAfterHook?: AddGuardsCallback;
     /**
      * Handle failure of declining all
      */
@@ -62,3 +63,4 @@ export interface GdprHtmlManagerOptions {
  * (either {@link gdprEl} is `undefined` or `document.querySelector("[data-gdpr]")` returned `null`)
  */
 export declare const restoreHtmlGdprManager: (gdprSavior: GdprSavior, { gdprEl, autoCloseBanner, bindEventHandlersHook, addGuardsBeforeHook, addGuardsAfterHook, onDeclineAllErrorHook, onAllowAllErrorHook, onSaveErrorHook, onCancelErrorHook, onBannerClose, onBannerOpen, }?: GdprHtmlManagerOptions) => Promise<GdprManager>;
+export * from "./errors";

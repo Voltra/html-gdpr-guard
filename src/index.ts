@@ -12,6 +12,7 @@ import {
 	StoreErrorHandler,
 } from "@/domainLogic/listeners";
 
+export type AddGuardsCallback = (managerBuilder: GdprManagerBuilder) => void;
 
 export interface GdprHtmlManagerOptions {
 	/**
@@ -37,14 +38,14 @@ export interface GdprHtmlManagerOptions {
 	 * @param managerBuilder
 	 * @default () => {}
 	 */
-	addGuardsBeforeHook?: (managerBuilder: GdprManagerBuilder) => void;
+	addGuardsBeforeHook?: AddGuardsCallback;
 
 	/**
 	 * Add guards after the ones parsed from the DOM
 	 * @param managerBuilder
 	 * @default () => {}
 	 */
-	addGuardsAfterHook?: (managerBuilder: GdprManagerBuilder) => void;
+	addGuardsAfterHook?: AddGuardsCallback;
 
 	/**
 	 * Handle failure of declining all
@@ -95,10 +96,10 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 	addGuardsBeforeHook = () => {},
 	addGuardsAfterHook = () => {},
 
-	onDeclineAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onDeclineAllErrorHook]", didStore, err),
-	onAllowAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onAllowAllErrorHook]", didStore, err),
-	onSaveErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onSaveErrorHook]", didStore, err),
-	onCancelErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onCancelErrorHook]", didStore, err),
+	onDeclineAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onDeclineAllErrorHook]", {didStore, err}),
+	onAllowAllErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onAllowAllErrorHook]", {didStore, err}),
+	onSaveErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onSaveErrorHook]", {didStore, err}),
+	onCancelErrorHook = (didStore, err) => console.error("[HtmlGdprGuard @ onCancelErrorHook]", {didStore, err}),
 
 	onBannerClose = () => {},
 	onBannerOpen = () => {},
@@ -140,7 +141,12 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 	if (autoCloseBanner && manager.bannerWasShown) {
 		manager.closeBanner();
 		onBannerClose();
+	} else { // Allows banner to be in closed state by default and open it when JS is ready
+		manager.resetAndShowBanner();
+		onBannerOpen();
 	}
 
 	return manager;
 };
+
+export * from "./errors";

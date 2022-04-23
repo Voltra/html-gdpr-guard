@@ -1,3 +1,6 @@
+/**
+ * Type for event listeners used in the {@link GlobalEventBus}
+ */
 type Listener = (e: Event) => void;
 type EventName = string;
 type Selector = string;
