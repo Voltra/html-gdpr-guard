@@ -2,9 +2,11 @@
 
 > Vanilla JavaScript binding to gdpr-guard as efficiently and easily as possible, based on data provided in the DOM
 
-<center><img src="https://github.com/Voltra/html-gdpr-guard/raw/master/html-gdpr-guard.png" alt="html-gdpr-guard logo"/></center>
+<center><img src="https://github.com/Voltra/html-gdpr-guard/raw/master/html-gdpr-guard.png" alt="html-gdpr-guard logo" width="250"/></center>
 
-You can have a look at the [demo](https://voltra.github.io/html-gdpr-guard) to see it in action and inspect the DOM.
+You can have a look at the [demo](https://voltra.github.io/html-gdpr-guard/demo) to see it in action and inspect the DOM.
+
+You can also have a look at the [docs](https://voltra.github.io/html-gdpr-guard).
 
 ## Install
 

@@ -1,6 +1,6 @@
 {
 	"name": "html-gdpr-guard",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Vanilla JavaScript binding to use gdpr-guard as efficiently and easily as possible, based on data provided in the DOM",
 	"main": "dist/index.js",
 	"types": "lib/index.d.ts",
@@ -11,6 +11,7 @@
 		"clean": "rm -rf dist",
 		"predocs": "([[ -d ./docs ]] && rm -rf ./docs) || true",
 		"docs": " typedoc --options typedoc.config.js",
+		"postdocs": "cp -R ./example/ ./docs/demo/ && cp -R ./dist/ ./docs/dist/",
 		"predeploy:docs": "npm run docs",
 		"deploy:docs": "gh-pages -d docs"
 	},
