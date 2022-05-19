@@ -37,6 +37,7 @@ module.exports = {
 		filename: "index.js",
 		path: here("dist"),
 		library: "htmlGdprGuard",
-		libraryTarget: "umd2",
+		libraryTarget: "umd",
+		globalObject: "typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : this",
 	},
 };
