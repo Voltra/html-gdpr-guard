@@ -19,7 +19,6 @@ document.querySelectorAll("[data-gdpr-open]")
 document.querySelectorAll("[data-gdpr-allow-all], [data-gdpr-decline-all], [data-gdpr-save], [data-gdpr-cancel]")
 	.forEach(el => {
 		el.addEventListener("click", () => {
-			window.gdprManager.closeBanner();
 			MicroModal.close("gdpr-modal");
 		}, { passive: true })
 	});
