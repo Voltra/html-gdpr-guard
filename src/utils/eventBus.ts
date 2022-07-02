@@ -18,30 +18,8 @@ export const GlobalEventBus = {
 	 * @param listener - The listener to call when the event is triggered on an element that matches the given selector
 	 */
 	on(event: EventName, selector: Selector, listener: Listener) {
-		if (!(event in this.events)) { // This event had no selectors or listeners attached yet
-			this.events[event] = {
-				[selector]: [listener],
-			};
-
-			window.addEventListener(event, e => {
-				Object.entries(this.events[event])
-					.forEach(([selector, listeners]: [Selector, Listener[]]) => {
-						const target = e.target as HTMLElement|null;
-
-						if (target?.matches?.(selector)) {
-							listeners.forEach(listener => listener(e));
-						}
-					});
-			});
-		} else {
-			const eventManager = this.events[event];
-
-			if (!(selector in eventManager)) { // This event didn't have the selector registered yet
-				eventManager[selector] = [];
-			}
-
-			eventManager[selector].push(listener);
-		}
-
+		document.querySelectorAll(selector).forEach(el => {
+			el.addEventListener(event, listener);
+		});
 	}
 };

@@ -157,30 +157,48 @@ export const setupButtonsListeners = (
 		e.preventDefault();
 
 		manager.disable();
+		manager.closeBanner();
 
 		gdprSavior.store(manager.raw())
 			.then(didStore => {
 				if (!didStore) {
+					manager.resetAndShowBanner();
 					hooks.onDeclineAllErrorHook(didStore);
 				} else {
-					doClose();
+					try {
+						doClose();
+					} catch(e) {
+						hooks.onDeclineAllErrorHook(didStore, e as Error);
+					}
 				}
-			}).catch(e => hooks.onDeclineAllErrorHook(false, e));
+			}).catch(e => {
+				manager.resetAndShowBanner();
+				hooks.onDeclineAllErrorHook(false, e)
+			});
 	});
 
 	GlobalEventBus.on("click", "[data-gdpr-allow-all]", e => {
 		e.preventDefault();
 
 		manager.enable();
+		manager.closeBanner();
 
 		gdprSavior.store(manager.raw())
 			.then(didStore => {
 				if (!didStore) {
+					manager.resetAndShowBanner();
 					hooks.onAllowAllErrorHook(didStore);
 				} else {
-					doClose();
+					try {
+						doClose();
+					} catch(e) {
+						hooks.onAllowAllErrorHook(didStore, e as Error);
+					}
 				}
-			}).catch(e => hooks.onAllowAllErrorHook(false, e));
+			}).catch(e => {
+				manager.resetAndShowBanner();
+				hooks.onAllowAllErrorHook(false, e)
+			});
 	});
 
 	GlobalEventBus.on("click", "[data-gdpr-cancel]", e => {
@@ -205,13 +223,22 @@ export const setupButtonsListeners = (
 	GlobalEventBus.on("click", "[data-gdpr-save]", e => {
 		e.preventDefault();
 
+		manager.closeBanner();
 		gdprSavior.store(manager.raw())
 			.then(didStore => {
 				if (!didStore) {
+					manager.resetAndShowBanner();
 					hooks.onSaveErrorHook(didStore);
 				} else {
-					doClose();
+					try {
+						doClose();
+					} catch(e) {
+						hooks.onSaveErrorHook(didStore, e as Error);
+					}
 				}
-			}).catch(e => hooks.onSaveErrorHook(e));
+			}).catch(e => {
+				manager.resetAndShowBanner();
+				hooks.onSaveErrorHook(e);
+			});
 	});
 };
