@@ -1,8 +1,8 @@
-import { NoManagerDefinitionError } from "@/errors/NoManagerDefinitionError";
+import { NoManagerDefinitionError } from "./errors";
 import { GdprManager, GdprManagerBuilder, GdprSavior } from "gdpr-guard";
-import { parseManagerDetails } from "@/domainLogic/dataExtractors";
+import { parseManagerDetails } from "./domainLogic/dataExtractors";
 import { GdprManagerEventHub } from "gdpr-guard/dist/GdprManagerEventHub";
-import { addGuardsFromDOM } from "@/domainLogic/guardsParsing";
+import { addGuardsFromDOM } from "./domainLogic/guardsParsing";
 import {
 	BindEventsCallback,
 	setupButtonsListeners,
@@ -10,7 +10,7 @@ import {
 	setupScriptActivation,
 	setupStyleSheetsActivation,
 	StoreErrorHandler,
-} from "@/domainLogic/listeners";
+} from "./domainLogic/listeners";
 
 export type AddGuardsCallback = (managerBuilder: GdprManagerBuilder) => void;
 

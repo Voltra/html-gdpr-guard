@@ -1,4 +1,4 @@
-import { HtmlGdprGuardError } from "@/errors/HtmlGdprGuardError";
+import { HtmlGdprGuardError } from "./HtmlGdprGuardError";
 
 export class NoNameError extends HtmlGdprGuardError {
 	static defaultMessage: string = "Guard definition is missing the guard's name";

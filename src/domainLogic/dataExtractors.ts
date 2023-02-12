@@ -1,9 +1,7 @@
-import { childSelector } from "@/utils/dom";
-import { NoNameError } from "@/errors/NoNameError";
-import { NoCheckboxError } from "@/errors/NoCheckboxError";
+import { childSelector } from "../utils/dom";
+import { NoNameError, NoCheckboxError, NoManagerDefinitionError } from "../errors";
 import { GdprStorage } from "gdpr-guard";
-import { isMeaningfulStr, toCamelCase } from "@/utils/misc";
-import { NoManagerDefinitionError } from "@/errors/NoManagerDefinitionError";
+import { isMeaningfulStr, toCamelCase } from "../utils/misc";
 
 /**
  * Get the guard's name from the DOM

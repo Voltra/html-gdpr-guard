@@ -1,4 +1,4 @@
-import { HtmlGdprGuardError } from "@/errors/HtmlGdprGuardError";
+import { HtmlGdprGuardError } from "./HtmlGdprGuardError";
 
 export class NoCheckboxError extends HtmlGdprGuardError {
 	static defaultMessage: string = "No checkbox found for that guard";
