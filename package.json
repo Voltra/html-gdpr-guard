@@ -35,6 +35,6 @@
 		"webpack-cli": "^4.9.1"
 	},
 	"dependencies": {
-		"gdpr-guard": "^2.2.8"
+		"gdpr-guard": "^2.3.0"
 	}
 }
