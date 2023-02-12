@@ -1,4 +1,4 @@
-import { GdprGuard, GdprManager, GdprManagerFactory, GdprSavior } from "gdpr-guard";
+import { GdprGuard, GdprGuardGroup, GdprManager, GdprManagerFactory, GdprSavior } from "gdpr-guard";
 import { GdprManagerEventHub } from "gdpr-guard/dist/GdprManagerEventHub";
 import { GlobalEventBus } from "@/utils/eventBus";
 import { GuardParseResult } from "@/domainLogic/guardsParsing";
@@ -23,15 +23,49 @@ export const setupCheckboxListeners = (manager: GdprManager, managerCheckbox: HT
 
 	managerCheckbox.addEventListener("click", () => {
 		manager.toggle();
+
+		// Properly propagate checkbox state updates
+		parsedGuards.forEach(({ name, checkbox }) => {
+			const guard = manager.getGuard(name)!;
+
+			checkbox.checked = guard.enabled;
+		});
 	});
 
 	parsedGuards.forEach(({ name, checkbox }) => {
 		const guard = manager.getGuard(name)!;
 
+		const getChildNames = (guard: GdprGuard) => {
+			const names = new Set();
+
+			if (guard instanceof GdprGuardGroup) {
+				const children = guard.getGuards();
+
+				children.forEach(guard => {
+					names.add(guard.name);
+					const childNames = getChildNames(guard);
+
+					Array.from(childNames).forEach(name => names.add(name));
+				});
+			}
+
+			return names;
+		};
+
+		const descendantNames = getChildNames(guard);
+		const childCheckboxes = parsedGuards.filter(({ name }) => descendantNames.has(name));
+
 		handleInitialSync(checkbox, guard);
 
 		checkbox.addEventListener("click", () => {
 			guard.toggle();
+
+			// Properly propagate checkbox state updates
+			childCheckboxes.forEach(({ name, checkbox }) => {
+				const childGuard = manager.getGuard(name)!;
+
+				checkbox.checked = childGuard.enabled;
+			});
 		});
 	});
 };
@@ -73,6 +107,8 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 							const attrValue = item.getAttribute(attrName)!;
 							clonedItem.setAttribute(attrName, attrValue);
 						});
+
+						clonedItem.textContent = item.textContent;
 					}
 
 					setupItemHook(clonedItem);
@@ -94,7 +130,7 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 export const setupScriptActivation = (manager: GdprManager) => {
 	setupInHeadActivation<HTMLScriptElement>(
 		manager,
-		"script[type='text'][src][data-gdpr-on-enable]",
+		"script[type='text'][data-gdpr-on-enable]",
 		actualScript => {
 			actualScript.setAttribute("type", "text/javascript");
 		}
@@ -115,7 +151,7 @@ export const setupStyleSheetsActivation = (manager: GdprManager) => {
 	);
 };
 
-export type BindEventsCallback = (eventsHub: GdprManagerEventHub) => void;
+export type BindEventsCallback = (eventsHub: GdprManagerEventHub, manager: GdprManager) => void;
 
 export type StoreErrorHandler = (didStore: boolean, error?: Error) => void;
 

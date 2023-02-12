@@ -136,7 +136,7 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 		onBannerOpen,
 	}, managerFactory);
 
-	bindEventHandlersHook(manager.events);
+	bindEventHandlersHook(manager.events, manager);
 
 	if (autoCloseBanner && manager.bannerWasShown) {
 		manager.closeBanner();
