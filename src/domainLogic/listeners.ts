@@ -87,6 +87,10 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 
 			if (manager.hasGuard(guardName)) {
 				manager.events.onEnable(guardName, () => {
+					if (!item) {
+						return; // Already handled, avoid call duplications like this for now
+					}
+
 					/*
 						Script tags have an internal attribute checking whether
 						they have already been loaded. Cloning a script will
@@ -95,28 +99,37 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 
 					const isScript = item.matches("script");
 
+					const oldItem = item;
+					item = undefined as any; // cleanup
+
+
 					const clonedItem = (
 						isScript
 							? document.createElement("script")
-							: item.cloneNode(true)
+							: oldItem.cloneNode(true)
 					) as ItemType;
+
+					Object.assign(clonedItem, {
+						...oldItem,
+						type: isScript ? "text/javascript" : ((oldItem as any).type ?? undefined),
+					});
 
 					if (isScript) {
 						// Copy attributes over
-						item.getAttributeNames().forEach(attrName => {
-							const attrValue = item.getAttribute(attrName)!;
+						oldItem.getAttributeNames().forEach(attrName => {
+							const attrValue = oldItem.getAttribute(attrName)!;
 							clonedItem.setAttribute(attrName, attrValue);
 						});
 
-						clonedItem.textContent = item.textContent;
+						clonedItem.textContent = oldItem.textContent;
 					}
 
 					setupItemHook(clonedItem);
 					clonedItem.removeAttribute("data-gdpr-on-enable");
-					item.remove();
+					oldItem.remove();
 					document.head.appendChild(clonedItem);
 				});
-			} else {
+			} else if(item) {
 				item.remove();
 			}
 		});
