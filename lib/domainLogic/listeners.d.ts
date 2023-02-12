@@ -26,7 +26,7 @@ export declare const setupScriptActivation: (manager: GdprManager) => void;
  * @param manager - The manager to attach the activation logic to
  */
 export declare const setupStyleSheetsActivation: (manager: GdprManager) => void;
-export declare type BindEventsCallback = (eventsHub: GdprManagerEventHub) => void;
+export declare type BindEventsCallback = (eventsHub: GdprManagerEventHub, manager: GdprManager) => void;
 export declare type StoreErrorHandler = (didStore: boolean, error?: Error) => void;
 export interface SetupButtonListenersHooks {
     onDeclineAllErrorHook: StoreErrorHandler;
