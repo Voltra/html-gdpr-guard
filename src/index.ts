@@ -1,5 +1,5 @@
 import { NoManagerDefinitionError } from "./errors";
-import { GdprManager, GdprManagerBuilder, GdprSavior } from "gdpr-guard";
+import { GdprGuard, GdprManager, GdprManagerBuilder, GdprSavior } from "gdpr-guard";
 import { parseManagerDetails } from "./domainLogic/dataExtractors";
 import { GdprManagerEventHub } from "gdpr-guard/dist/GdprManagerEventHub";
 import { addGuardsFromDOM } from "./domainLogic/guardsParsing";
@@ -11,6 +11,7 @@ import {
 	setupStyleSheetsActivation,
 	StoreErrorHandler,
 } from "./domainLogic/listeners";
+import { Cache } from "@/utils/cache";
 
 export type AddGuardsCallback = (managerBuilder: GdprManagerBuilder) => void;
 
@@ -124,9 +125,19 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 	const hadManager = await gdprSavior.exists(false);
 	const manager = await gdprSavior.restoreOrCreate(managerFactory);
 
+	const guardCache = new Cache<string, GdprGuard>();
+	const updateCheckboxState = () => {
+		// Properly reflect checkbox state updates
+		parsedGuards.forEach(({ name, checkbox }) => {
+			const guard = guardCache.getOrEmplace(name, () => manager.getGuard(name)!);
+
+			checkbox.checked = guard.enabled;
+		});
+	};
+
 	setupScriptActivation(manager);
 	setupStyleSheetsActivation(manager);
-	setupCheckboxListeners(manager, managerCheckbox, parsedGuards, hadManager);
+	setupCheckboxListeners(manager, managerCheckbox, parsedGuards, hadManager, updateCheckboxState);
 	setupButtonsListeners(manager, gdprSavior, {
 		onDeclineAllErrorHook,
 		onAllowAllErrorHook,
@@ -134,7 +145,7 @@ export const restoreHtmlGdprManager = async (gdprSavior: GdprSavior, {
 		onCancelErrorHook,
 		onBannerClose,
 		onBannerOpen,
-	}, managerFactory);
+	}, managerFactory, updateCheckboxState);
 
 	bindEventHandlersHook(manager.events, manager);
 
