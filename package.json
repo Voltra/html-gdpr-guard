@@ -1,6 +1,6 @@
 {
 	"name": "html-gdpr-guard",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "Vanilla JavaScript binding to use gdpr-guard as efficiently and easily as possible, based on data provided in the DOM",
 	"main": "dist/index.js",
 	"types": "lib/index.d.ts",
@@ -35,6 +35,6 @@
 		"webpack-cli": "^4.9.1"
 	},
 	"dependencies": {
-		"gdpr-guard": "^2.2.8"
+		"gdpr-guard": "^2.3.0"
 	}
 }
