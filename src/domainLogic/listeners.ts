@@ -87,19 +87,31 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 
 			if (manager.hasGuard(guardName)) {
 				manager.events.onEnable(guardName, () => {
+					if (!item) {
+						return; // Already handled, avoid call duplications like this for now
+					}
+
+					const oldItem = item;
+					item = undefined as any; // cleanup
+
 					/*
 						Script tags have an internal attribute checking whether
 						they have already been loaded. Cloning a script will
 						always clone that flag as well (which is unwanted).
 					 */
 
-					const isScript = item.matches("script");
+					const isScript = oldItem.matches("script");
 
 					const clonedItem = (
 						isScript
 							? document.createElement("script")
-							: item.cloneNode(true)
+							: oldItem.cloneNode(true)
 					) as ItemType;
+
+					Object.assign(clonedItem, {
+						...oldItem,
+						type: isScript ? "text/javascript" : ((oldItem as any).type ?? undefined),
+					});
 
 					if (isScript) {
 						// Copy attributes over
@@ -116,7 +128,7 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 					item.remove();
 					document.head.appendChild(clonedItem);
 				});
-			} else {
+			} else if(item) {
 				item.remove();
 			}
 		});
