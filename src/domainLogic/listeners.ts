@@ -115,7 +115,7 @@ export const setupStyleSheetsActivation = (manager: GdprManager) => {
 	);
 };
 
-export type BindEventsCallback = (eventsHub: GdprManagerEventHub) => void;
+export type BindEventsCallback = (eventsHub: GdprManagerEventHub, manager: GdprManager) => void;
 
 export type StoreErrorHandler = (didStore: boolean, error?: Error) => void;
 
