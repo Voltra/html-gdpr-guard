@@ -190,11 +190,6 @@ export const setupButtonsListeners = (
 	hooks: SetupButtonListenersHooks,
 	restoreFactory: GdprManagerFactory
 ) => {
-	const doClose = () => {
-		manager.closeBanner();
-		hooks.onBannerClose();
-	};
-
 	GlobalEventBus.on("click", "[data-gdpr-open]", e => {
 		e.preventDefault();
 
