@@ -10,7 +10,7 @@ import { GuardParseResult } from "@/domainLogic/guardsParsing";
  * @param parsedGuards - The guards that have been parsed from the DOM
  * @param hadManager - Whether the manager came from the savior instead of the factory
  */
-export const setupCheckboxListeners = (manager: GdprManager, managerCheckbox: HTMLInputElement, parsedGuards: GuardParseResult[], hadManager: boolean) => {
+export const setupCheckboxListeners = (manager: GdprManager, managerCheckbox: HTMLInputElement, parsedGuards: GuardParseResult[], hadManager: boolean, updateCheckboxState: () => void) => {
 	const handleInitialSync = (checkbox: HTMLInputElement, guard: GdprGuard) => {
 		if (hadManager) {
 			if ((checkbox.checked && !guard.enabled) || (!checkbox.checked && guard.enabled)) {
@@ -23,49 +23,17 @@ export const setupCheckboxListeners = (manager: GdprManager, managerCheckbox: HT
 
 	managerCheckbox.addEventListener("click", () => {
 		manager.toggle();
-
-		// Properly propagate checkbox state updates
-		parsedGuards.forEach(({ name, checkbox }) => {
-			const guard = manager.getGuard(name)!;
-
-			checkbox.checked = guard.enabled;
-		});
+		updateCheckboxState();
 	});
 
 	parsedGuards.forEach(({ name, checkbox }) => {
 		const guard = manager.getGuard(name)!;
 
-		const getChildNames = (guard: GdprGuard) => {
-			const names = new Set();
-
-			if (guard instanceof GdprGuardGroup) {
-				const children = guard.getGuards();
-
-				children.forEach(guard => {
-					names.add(guard.name);
-					const childNames = getChildNames(guard);
-
-					Array.from(childNames).forEach(name => names.add(name));
-				});
-			}
-
-			return names;
-		};
-
-		const descendantNames = getChildNames(guard);
-		const childCheckboxes = parsedGuards.filter(({ name }) => descendantNames.has(name));
-
 		handleInitialSync(checkbox, guard);
 
 		checkbox.addEventListener("click", () => {
 			guard.toggle();
-
-			// Properly propagate checkbox state updates
-			childCheckboxes.forEach(({ name, checkbox }) => {
-				const childGuard = manager.getGuard(name)!;
-
-				checkbox.checked = childGuard.enabled;
-			});
+			updateCheckboxState();
 		});
 	});
 };
@@ -183,17 +151,20 @@ export interface SetupButtonListenersHooks {
  * @param gdprSavior
  * @param hooks
  * @param restoreFactory
+ * @param updateCheckboxState
  */
 export const setupButtonsListeners = (
 	manager: GdprManager,
 	gdprSavior: GdprSavior,
 	hooks: SetupButtonListenersHooks,
-	restoreFactory: GdprManagerFactory
+	restoreFactory: GdprManagerFactory,
+	updateCheckboxState: () => void
 ) => {
 	GlobalEventBus.on("click", "[data-gdpr-open]", e => {
 		e.preventDefault();
 
 		manager.resetAndShowBanner();
+		updateCheckboxState();
 		hooks.onBannerOpen();
 	});
 
@@ -201,12 +172,14 @@ export const setupButtonsListeners = (
 		e.preventDefault();
 
 		manager.disable();
+		updateCheckboxState();
 		manager.closeBanner();
 
 		gdprSavior.store(manager.raw())
 			.then(didStore => {
 				if (!didStore) {
 					manager.resetAndShowBanner();
+					updateCheckboxState();
 					hooks.onDeclineAllErrorHook(didStore);
 				} else {
 					try {
@@ -217,6 +190,7 @@ export const setupButtonsListeners = (
 				}
 			}).catch(e => {
 				manager.resetAndShowBanner();
+			updateCheckboxState();
 				hooks.onDeclineAllErrorHook(false, e)
 			});
 	});
@@ -225,12 +199,14 @@ export const setupButtonsListeners = (
 		e.preventDefault();
 
 		manager.enable();
+		updateCheckboxState();
 		manager.closeBanner();
 
 		gdprSavior.store(manager.raw())
 			.then(didStore => {
 				if (!didStore) {
 					manager.resetAndShowBanner();
+					updateCheckboxState();
 					hooks.onAllowAllErrorHook(didStore);
 				} else {
 					try {
@@ -241,6 +217,7 @@ export const setupButtonsListeners = (
 				}
 			}).catch(e => {
 				manager.resetAndShowBanner();
+				updateCheckboxState();
 				hooks.onAllowAllErrorHook(false, e)
 			});
 	});
@@ -272,6 +249,7 @@ export const setupButtonsListeners = (
 			.then(didStore => {
 				if (!didStore) {
 					manager.resetAndShowBanner();
+					updateCheckboxState();
 					hooks.onSaveErrorHook(didStore);
 				} else {
 					try {
@@ -282,6 +260,7 @@ export const setupButtonsListeners = (
 				}
 			}).catch(e => {
 				manager.resetAndShowBanner();
+				updateCheckboxState();
 				hooks.onSaveErrorHook(e);
 			});
 	});

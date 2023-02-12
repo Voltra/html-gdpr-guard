@@ -8,7 +8,7 @@ import { GuardParseResult } from "@/domainLogic/guardsParsing";
  * @param parsedGuards - The guards that have been parsed from the DOM
  * @param hadManager - Whether the manager came from the savior instead of the factory
  */
-export declare const setupCheckboxListeners: (manager: GdprManager, managerCheckbox: HTMLInputElement, parsedGuards: GuardParseResult[], hadManager: boolean) => void;
+export declare const setupCheckboxListeners: (manager: GdprManager, managerCheckbox: HTMLInputElement, parsedGuards: GuardParseResult[], hadManager: boolean, updateCheckboxState: () => void) => void;
 /**
  * Setup item activation in the `<head>` tag (i.e. to execute code when the corresponding guard is enabled)
  * @param manager - The manager to attach the activation logic to
@@ -42,5 +42,6 @@ export interface SetupButtonListenersHooks {
  * @param gdprSavior
  * @param hooks
  * @param restoreFactory
+ * @param updateCheckboxState
  */
-export declare const setupButtonsListeners: (manager: GdprManager, gdprSavior: GdprSavior, hooks: SetupButtonListenersHooks, restoreFactory: GdprManagerFactory) => void;
+export declare const setupButtonsListeners: (manager: GdprManager, gdprSavior: GdprSavior, hooks: SetupButtonListenersHooks, restoreFactory: GdprManagerFactory, updateCheckboxState: () => void) => void;
