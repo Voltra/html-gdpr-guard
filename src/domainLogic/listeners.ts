@@ -215,7 +215,7 @@ export const setupButtonsListeners = (
 					hooks.onDeclineAllErrorHook(didStore);
 				} else {
 					try {
-						doClose();
+						hooks.onBannerClose();
 					} catch(e) {
 						hooks.onDeclineAllErrorHook(didStore, e as Error);
 					}
@@ -239,7 +239,7 @@ export const setupButtonsListeners = (
 					hooks.onAllowAllErrorHook(didStore);
 				} else {
 					try {
-						doClose();
+						hooks.onBannerClose();
 					} catch(e) {
 						hooks.onAllowAllErrorHook(didStore, e as Error);
 					}
@@ -280,7 +280,7 @@ export const setupButtonsListeners = (
 					hooks.onSaveErrorHook(didStore);
 				} else {
 					try {
-						doClose();
+						hooks.onBannerClose();
 					} catch(e) {
 						hooks.onSaveErrorHook(didStore, e as Error);
 					}
