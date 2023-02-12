@@ -107,6 +107,8 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 							const attrValue = item.getAttribute(attrName)!;
 							clonedItem.setAttribute(attrName, attrValue);
 						});
+
+						clonedItem.textContent = item.textContent;
 					}
 
 					setupItemHook(clonedItem);
@@ -128,7 +130,7 @@ export const setupInHeadActivation = <ItemType extends HTMLElement = HTMLElement
 export const setupScriptActivation = (manager: GdprManager) => {
 	setupInHeadActivation<HTMLScriptElement>(
 		manager,
-		"script[type='text'][src][data-gdpr-on-enable]",
+		"script[type='text'][data-gdpr-on-enable]",
 		actualScript => {
 			actualScript.setAttribute("type", "text/javascript");
 		}
