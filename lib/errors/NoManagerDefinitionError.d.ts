@@ -1,4 +1,4 @@
-import { HtmlGdprGuardError } from "@/errors/HtmlGdprGuardError";
+import { HtmlGdprGuardError } from "./HtmlGdprGuardError";
 /**
  * Error thrown when the library does not find
  * a root {@link HTMLElement} to get the manager's

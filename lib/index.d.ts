@@ -1,5 +1,5 @@
 import { GdprManager, GdprManagerBuilder, GdprSavior } from "gdpr-guard";
-import { BindEventsCallback, StoreErrorHandler } from "@/domainLogic/listeners";
+import { BindEventsCallback, StoreErrorHandler } from "./domainLogic/listeners";
 export declare type AddGuardsCallback = (managerBuilder: GdprManagerBuilder) => void;
 export interface GdprHtmlManagerOptions {
     /**
