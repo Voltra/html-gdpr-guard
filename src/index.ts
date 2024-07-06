@@ -1,7 +1,6 @@
 import { NoManagerDefinitionError } from "./errors";
-import { GdprGuard, GdprManager, GdprManagerBuilder, GdprSavior } from "gdpr-guard";
+import { GdprGuard, GdprManager, GdprManagerBuilder, GdprSavior, GdprManagerEventHub } from "gdpr-guard";
 import { parseManagerDetails } from "./domainLogic/dataExtractors";
-import { GdprManagerEventHub } from "gdpr-guard/dist/GdprManagerEventHub";
 import { addGuardsFromDOM } from "./domainLogic/guardsParsing";
 import {
 	BindEventsCallback,

@@ -1,7 +1,6 @@
-import { GdprGuard, GdprGuardGroup, GdprManager, GdprManagerFactory, GdprSavior } from "gdpr-guard";
-import { GdprManagerEventHub } from "gdpr-guard/dist/GdprManagerEventHub";
-import { GlobalEventBus } from "@/utils/eventBus";
-import { GuardParseResult } from "@/domainLogic/guardsParsing";
+import { GdprGuard, GdprManager, GdprManagerFactory, GdprSavior, GdprManagerEventHub } from "gdpr-guard";
+import { GlobalEventBus } from "../utils/eventBus";
+import { GuardParseResult } from "../domainLogic/guardsParsing";
 
 /**
  * Add listeners to the change event of the manager's and guards' checkboxes
@@ -9,6 +8,7 @@ import { GuardParseResult } from "@/domainLogic/guardsParsing";
  * @param managerCheckbox - The global manager toggle checkbox
  * @param parsedGuards - The guards that have been parsed from the DOM
  * @param hadManager - Whether the manager came from the savior instead of the factory
+ * @param updateCheckboxState - Callback used to trigger an update of the checkbox's state
  */
 export const setupCheckboxListeners = (manager: GdprManager, managerCheckbox: HTMLInputElement, parsedGuards: GuardParseResult[], hadManager: boolean, updateCheckboxState: () => void) => {
 	const handleInitialSync = (checkbox: HTMLInputElement, guard: GdprGuard) => {
